@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-blue-50 via-white to-orange-50 min-h-screen;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-solar-blue to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-solar-blue border-2 border-solar-blue px-6 py-3 rounded-lg font-semibold hover:bg-solar-blue hover:text-white transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-200 p-6;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-solar-blue focus:border-transparent outline-none transition-all;
+  }
+}
+
+.react-calendar {
+  @apply w-full border-none shadow-md rounded-lg p-4;
+}
+
+.react-calendar__tile--active {
+  @apply bg-solar-blue text-white;
+}
+
+.react-calendar__tile--now {
+  @apply bg-solar-yellow text-gray-800;
+}
+
+.react-calendar__tile:enabled:hover {
+  @apply bg-blue-100;
+}

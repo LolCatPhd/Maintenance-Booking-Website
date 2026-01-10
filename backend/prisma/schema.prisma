@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String
+  role          UserRole       @default(CLIENT)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  solarSystems  SolarSystem[]
+  bookings      Booking[]
+  payments      Payment[]
+}
+
+enum UserRole {
+  CLIENT
+  ADMIN
+  TECHNICIAN
+}
+
+model SolarSystem {
+  id                String              @id @default(uuid())
+  userId            String
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  systemName        String
+  installationDate  DateTime
+  address           String
+  components        SystemComponent[]
+  maintenanceVisits MaintenanceVisit[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model SystemComponent {
+  id              String       @id @default(uuid())
+  solarSystemId   String
+  solarSystem     SolarSystem  @relation(fields: [solarSystemId], references: [id], onDelete: Cascade)
+  componentType   String
+  manufacturer    String
+  model           String
+  serialNumber    String?
+  installDate     DateTime
+  warrantyExpiry  DateTime?
+  notes           String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model AvailableSlot {
+  id          String    @id @default(uuid())
+  date        DateTime  @unique
+  isAvailable Boolean   @default(true)
+  maxBookings Int       @default(4)
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Booking {
+  id                String            @id @default(uuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slotId            String
+  slot              AvailableSlot     @relation(fields: [slotId], references: [id])
+  serviceType       ServiceType
+  status            BookingStatus     @default(PENDING)
+  address           String
+  notes             String?
+  totalAmount       Float
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  payment           Payment?
+  maintenanceVisit  MaintenanceVisit?
+}
+
+enum ServiceType {
+  ROUTINE_INSPECTION
+  PANEL_CLEANING
+  INVERTER_SERVICE
+  ELECTRICAL_CHECK
+  FULL_MAINTENANCE
+  EMERGENCY_REPAIR
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  bookingId       String        @unique
+  booking         Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  amount          Float
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(PENDING)
+  stripePaymentId String?
+  transactionRef  String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  EFT
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model MaintenanceVisit {
+  id              String      @id @default(uuid())
+  bookingId       String      @unique
+  booking         Booking     @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  solarSystemId   String
+  solarSystem     SolarSystem @relation(fields: [solarSystemId], references: [id])
+  technicianName  String?
+  visitDate       DateTime
+  completedDate   DateTime?
+  findings        String?
+  workPerformed   String?
+  recommendations String?
+  nextServiceDue  DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
