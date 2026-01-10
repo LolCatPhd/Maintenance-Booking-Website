@@ -49,10 +49,12 @@ export const solarSystemAPI = {
 };
 
 export const paymentAPI = {
-  createPaymentIntent: (bookingId: string, paymentMethod: string) =>
-    api.post('/payments/create-intent', { bookingId, paymentMethod }),
+  createPayment: (bookingId: string, paymentMethod: string) =>
+    api.post('/payments/create-payment', { bookingId, paymentMethod }),
   confirmPayment: (bookingId: string, transactionRef?: string) =>
     api.post('/payments/confirm', { bookingId, transactionRef }),
+  checkPaymentStatus: (paymentId: string) =>
+    api.get(`/payments/check-status/${paymentId}`),
   getPaymentHistory: () => api.get('/payments/history'),
 };
 

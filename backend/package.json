@@ -1,7 +1,7 @@
 {
-  "name": "solar-booking-backend",
+  "name": "artisan-solar-booking-backend",
   "version": "1.0.0",
-  "description": "Backend API for Solar Maintenance Booking System",
+  "description": "Backend API for Artisan Solar Booking System",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
@@ -11,17 +11,18 @@
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio"
   },
-  "keywords": ["solar", "booking", "maintenance"],
-  "author": "",
+  "keywords": ["solar", "booking", "maintenance", "artisan"],
+  "author": "Artisan Solar",
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^5.8.0",
+    "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "stripe": "^14.10.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

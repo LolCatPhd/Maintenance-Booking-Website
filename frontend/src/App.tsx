@@ -9,6 +9,8 @@ import Bookings from './pages/Bookings';
 import BookingForm from './pages/BookingForm';
 import SolarSystems from './pages/SolarSystems';
 import Payment from './pages/Payment';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancel from './pages/PaymentCancel';
 import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
@@ -41,6 +43,8 @@ function App() {
             path="payment/:bookingId"
             element={user ? <Payment /> : <Navigate to="/login" />}
           />
+          <Route path="payment/success" element={<PaymentSuccess />} />
+          <Route path="payment/cancel" element={<PaymentCancel />} />
           <Route
             path="admin"
             element={user?.role === 'ADMIN' ? <AdminDashboard /> : <Navigate to="/dashboard" />}

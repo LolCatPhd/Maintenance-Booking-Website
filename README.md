@@ -1,6 +1,6 @@
-# Solar Maintenance Booking Website
+# Artisan Solar - Maintenance Booking System
 
-A comprehensive web application for residential solar system owners to book maintenance services with secure payment processing and system tracking.
+A comprehensive web application for residential solar system owners to book maintenance services with secure payment processing and system tracking. Built for the South African market with PayFast integration.
 
 ## Features
 
@@ -9,15 +9,15 @@ A comprehensive web application for residential solar system owners to book main
 - **Dashboard**: Overview of solar systems, bookings, and maintenance history
 - **Booking System**: Interactive calendar to select available maintenance dates
 - **Multiple Services**:
-  - Routine Inspection ($150)
-  - Panel Cleaning ($200)
-  - Inverter Service ($250)
-  - Electrical Check ($180)
-  - Full Maintenance ($400)
-  - Emergency Repair ($350)
+  - Routine Inspection (R150)
+  - Panel Cleaning (R200)
+  - Inverter Service (R250)
+  - Electrical Check (R180)
+  - Full Maintenance (R400)
+  - Emergency Repair (R350)
 - **Payment Processing**:
-  - Credit card payments via Stripe
-  - EFT/Bank transfer option
+  - Credit/Debit card payments via PayFast (South African payment gateway)
+  - EFT/Bank transfer option with automated reference generation
 - **Solar System Management**: Track system components and maintenance history
 - **Service History**: View past maintenance visits with detailed reports
 
@@ -34,7 +34,7 @@ A comprehensive web application for residential solar system owners to book main
 - Node.js + Express + TypeScript
 - PostgreSQL with Prisma ORM
 - JWT authentication
-- Stripe payment integration
+- PayFast payment integration (South African payment gateway)
 - Bcrypt for password hashing
 - Zod for validation
 
@@ -45,7 +45,7 @@ A comprehensive web application for residential solar system owners to book main
 - Zustand for state management
 - React Router for navigation
 - React Calendar for date selection
-- Stripe Elements for payments
+- PayFast integration for payments
 - Axios for API calls
 
 ## Getting Started
@@ -53,7 +53,7 @@ A comprehensive web application for residential solar system owners to book main
 ### Prerequisites
 - Node.js (v18 or higher)
 - PostgreSQL (v14 or higher)
-- Stripe account for payment processing
+- PayFast merchant account (sign up at https://www.payfast.co.za)
 
 ### Installation
 
@@ -74,7 +74,9 @@ cp .env.example .env
 # Edit .env with your configuration:
 # - DATABASE_URL: Your PostgreSQL connection string
 # - JWT_SECRET: A secure random string
-# - STRIPE_SECRET_KEY: Your Stripe secret key
+# - PAYFAST_MERCHANT_ID: Your PayFast merchant ID
+# - PAYFAST_MERCHANT_KEY: Your PayFast merchant key
+# - PAYFAST_PASSPHRASE: Your PayFast passphrase
 # - PORT: Backend port (default: 5000)
 
 # Generate Prisma client
@@ -95,8 +97,7 @@ npm install
 # Copy environment file
 cp .env.example .env
 
-# Edit .env with:
-# - VITE_STRIPE_PUBLISHABLE_KEY: Your Stripe publishable key
+# No additional env variables needed for frontend
 
 # Start development server
 npm run dev
@@ -111,7 +112,7 @@ The application will be available at:
 The application uses PostgreSQL. Create a database and update the `DATABASE_URL` in `backend/.env`:
 
 ```
-DATABASE_URL="postgresql://user:password@localhost:5432/solar_booking"
+DATABASE_URL="postgresql://user:password@localhost:5432/artisan_solar"
 ```
 
 Then run migrations:
@@ -220,21 +221,29 @@ Maintenance-Booking-Website/
 
 ## Payment Integration
 
-The application uses Stripe for payment processing:
+The application uses PayFast for payment processing (South African payment gateway):
 
-1. **Credit Card Payments**: Fully integrated with Stripe Elements
-2. **EFT/Bank Transfer**: Manual process with reference tracking
+1. **Credit/Debit Card Payments**: Fully integrated with PayFast
+2. **EFT/Bank Transfer**: Automated process with unique reference generation
 
-### Stripe Setup
-1. Create a Stripe account at https://stripe.com
-2. Get your API keys from the Stripe Dashboard
-3. Add keys to environment files:
-   - Backend: `STRIPE_SECRET_KEY` in `backend/.env`
-   - Frontend: `VITE_STRIPE_PUBLISHABLE_KEY` in `frontend/.env`
+### PayFast Setup
+1. Create a PayFast account at https://www.payfast.co.za
+2. Get your merchant credentials from Settings → Integration
+3. Add credentials to `backend/.env`:
+   - `PAYFAST_MERCHANT_ID`: Your merchant ID
+   - `PAYFAST_MERCHANT_KEY`: Your merchant key
+   - `PAYFAST_PASSPHRASE`: Your secure passphrase
+   - `PAYFAST_SANDBOX`: Set to `true` for testing, `false` for production
 
-For testing, use Stripe test cards:
-- Success: `4242 4242 4242 4242`
-- Decline: `4000 0000 0000 0002`
+4. Configure your PayFast dashboard:
+   - Return URL: `https://yourdomain.com/payment/success`
+   - Cancel URL: `https://yourdomain.com/payment/cancel`
+   - Notify URL: `https://your-backend.com/api/payments/notify`
+
+For testing in sandbox mode:
+- Use PayFast sandbox credentials (provided when you create sandbox account)
+- All transactions will be simulated
+- No real money is processed in sandbox mode
 
 ## Development
 
@@ -280,24 +289,29 @@ npm run preview
 3. Deploy the `dist` folder to your hosting service
 
 Popular hosting options:
-- Frontend: Vercel, Netlify, AWS S3
-- Backend: Heroku, AWS EC2, DigitalOcean
-- Database: AWS RDS, Heroku Postgres, DigitalOcean
+- **xneelo** (South African hosting - see XNEELO_DEPLOYMENT.md)
+- Frontend: Vercel, Netlify, AWS S3, xneelo cPanel
+- Backend: Railway, Render, Heroku, AWS EC2, DigitalOcean
+- Database: AWS RDS, Heroku Postgres, DigitalOcean, Railway
 
 ## Environment Variables
 
 ### Backend (.env)
 ```
-DATABASE_URL=postgresql://user:password@localhost:5432/solar_booking
+DATABASE_URL=postgresql://user:password@localhost:5432/artisan_solar
 JWT_SECRET=your-secret-key-here
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret
+PAYFAST_MERCHANT_ID=your_payfast_merchant_id
+PAYFAST_MERCHANT_KEY=your_payfast_merchant_key
+PAYFAST_PASSPHRASE=your_payfast_passphrase
+PAYFAST_SANDBOX=true
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:5000
 PORT=5000
 NODE_ENV=development
 ```
 
 ### Frontend (.env)
 ```
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable
 VITE_API_URL=http://localhost:5000/api
 ```
 
@@ -360,4 +374,20 @@ MIT License - See LICENSE file for details
 
 ---
 
-Built with ❤️ for solar system owners and maintenance providers
+---
+
+**Artisan Solar** - Professional Solar System Maintenance
+Built for South African solar system owners and maintenance providers
+
+## Additional Documentation
+
+- **XNEELO_DEPLOYMENT.md**: Detailed deployment guide for xneelo hosting
+- **SETUP.md**: Quick setup guide for development
+
+## South African Payment Integration
+
+This application is specifically designed for the South African market with:
+- PayFast integration (local payment gateway)
+- ZAR (Rands) currency
+- South African date formats
+- EFT/Bank transfer support with Standard Bank details

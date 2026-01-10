@@ -1,5 +1,5 @@
 {
-  "name": "solar-booking-frontend",
+  "name": "artisan-solar-booking-frontend",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -8,8 +8,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@stripe/react-stripe-js": "^2.4.0",
-    "@stripe/stripe-js": "^2.4.0",
     "axios": "^1.6.5",
     "react": "^18.2.0",
     "react-calendar": "^4.8.0",
