@@ -13,9 +13,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration - allow requests from Netlify frontend
+// CORS configuration - allow requests from custom domain and Netlify frontend
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  'https://artisansolar.co.za',
+  'https://www.artisansolar.co.za',
   'https://glittering-dieffenbachia-cb381d.netlify.app',
   'http://localhost:3000',
 ].filter(Boolean);
