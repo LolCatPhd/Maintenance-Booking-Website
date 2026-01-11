@@ -80,15 +80,16 @@ const AVAILABLE_RAIL_LENGTHS = [
 
 /**
  * Optimization criteria for rail selection
+ * Note: Currently using MixedRailConfiguration instead
  */
-interface RailConfiguration {
-  partNumber: string;
-  length: number;
-  railsNeeded: number;
-  joinersNeeded: number;
-  totalWaste: number;
-  wastePercentage: number;
-}
+// interface RailConfiguration {
+//   partNumber: string;
+//   length: number;
+//   railsNeeded: number;
+//   joinersNeeded: number;
+//   totalWaste: number;
+//   wastePercentage: number;
+// }
 
 /**
  * Mixed rail configuration (allows multiple rail types)
@@ -503,7 +504,7 @@ function calculateFlushMountComponents(
         // Rail joiners - one joiner between each pair of rails in a rail line
         // Formula: joinersPerLine × total rail lines
         // If only 1 rail needed per line, no joiners required
-        if (railsPerLine > 1) {
+        if (totalRailsPerLine > 1) {
           quantity = joinersPerLine * totalRailLines;
         } else {
           quantity = 0;

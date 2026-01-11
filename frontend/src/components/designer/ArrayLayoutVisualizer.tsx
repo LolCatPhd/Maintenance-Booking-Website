@@ -536,7 +536,6 @@ export const ArrayLayoutVisualizer: React.FC<ArrayLayoutVisualizerProps> = ({
   // Determine system type for legend
   const isRailSystem = config.mountingSystem?.name.includes('Long Rail') || false;
   const isNoRailSystem = config.mountingSystem?.name.includes('No Rail') || false;
-  const midClampSpacing = 25; // mm
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">

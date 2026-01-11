@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutResult } from '../types';
+import { LayoutResult, MountingComponent } from '../types';
 
 interface ComponentsListProps {
   layoutResult: LayoutResult;
@@ -62,7 +62,7 @@ export const ComponentsList: React.FC<ComponentsListProps> = ({
             </tr>
           </thead>
           <tbody>
-            {layoutResult.components.map((component, index) => (
+            {layoutResult.components.map((component: MountingComponent, index: number) => (
               <tr
                 key={index}
                 className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
