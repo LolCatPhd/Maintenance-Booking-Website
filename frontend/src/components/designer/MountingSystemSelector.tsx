@@ -35,7 +35,7 @@ export const MountingSystemSelector: React.FC<MountingSystemSelectorProps> = ({
   const allSystems = getMountingSystemsByFilters(roofType, category, manufacturer);
 
   // Filter systems based on orientation
-  const availableSystems = allSystems.filter(system => {
+  const availableSystems = allSystems.filter((system: MountingSystem) => {
     const name = system.name.toLowerCase();
 
     // If system name contains "landscape", only show for landscape orientation
@@ -72,7 +72,7 @@ export const MountingSystemSelector: React.FC<MountingSystemSelectorProps> = ({
       </h2>
 
       <div className="space-y-3">
-        {availableSystems.map((system) => (
+        {availableSystems.map((system: MountingSystem) => (
           <button
             key={system.id}
             onClick={() => onSystemChange(system)}

@@ -50,7 +50,7 @@ export const ManufacturerSelector: React.FC<ManufacturerSelectorProps> = ({
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {availableManufacturers.map((manufacturer) => (
+        {availableManufacturers.map((manufacturer: string) => (
           <button
             key={manufacturer}
             onClick={() => onManufacturerChange(manufacturer)}
