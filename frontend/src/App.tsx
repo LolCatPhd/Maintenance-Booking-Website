@@ -4,6 +4,8 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Bookings from './pages/Bookings';
 import BookingForm from './pages/BookingForm';
@@ -24,6 +26,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path="login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
           <Route path="register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+          <Route path="forgot-password" element={!user ? <ForgotPassword /> : <Navigate to="/dashboard" />} />
+          <Route path="reset-password" element={!user ? <ResetPassword /> : <Navigate to="/dashboard" />} />
           <Route
             path="dashboard"
             element={user ? <Dashboard /> : <Navigate to="/login" />}

@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  password      String
-  firstName     String
-  lastName      String
-  phone         String
-  role          UserRole       @default(CLIENT)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  solarSystems  SolarSystem[]
-  bookings      Booking[]
-  payments      Payment[]
+  id                  String         @id @default(uuid())
+  email               String         @unique
+  password            String
+  firstName           String
+  lastName            String
+  phone               String
+  role                UserRole       @default(CLIENT)
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  solarSystems        SolarSystem[]
+  bookings            Booking[]
+  payments            Payment[]
 }
 
 enum UserRole {
