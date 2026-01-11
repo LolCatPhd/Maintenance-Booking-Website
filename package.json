@@ -10,7 +10,16 @@
     "build:frontend": "cd frontend && npm run build",
     "build:all": "npm run build:backend && npm run build:frontend"
   },
-  "keywords": ["solar", "booking", "maintenance", "stripe", "react"],
+  "keywords": [
+    "solar",
+    "booking",
+    "maintenance",
+    "stripe",
+    "react"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "xlsx": "^0.18.5"
+  }
 }
