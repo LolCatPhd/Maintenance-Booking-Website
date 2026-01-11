@@ -1,6 +1,6 @@
 import React from 'react';
-import { MountingCategory } from '../types';
-import { MOUNTING_CATEGORY_LABELS } from '../data/mountingSystems';
+import { MountingCategory } from '../types/designer.ts';
+import { MOUNTING_CATEGORY_LABELS } from '../data/mountingSystems.ts';
 
 interface MountingCategorySelectorProps {
   selectedCategory: MountingCategory | null;

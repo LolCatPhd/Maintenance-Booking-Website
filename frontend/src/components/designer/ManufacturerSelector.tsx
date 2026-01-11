@@ -1,6 +1,6 @@
 import React from 'react';
-import { RoofType, MountingCategory } from '../types';
-import { getAvailableManufacturers } from '../data/mountingSystems';
+import { RoofType, MountingCategory } from '../types/designer.ts';
+import { getAvailableManufacturers } from '../data/mountingSystems.ts';
 
 interface ManufacturerSelectorProps {
   roofType: RoofType | null;

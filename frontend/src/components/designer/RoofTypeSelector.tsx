@@ -1,6 +1,6 @@
 import React from 'react';
-import { RoofType } from '../types';
-import { ROOF_TYPE_LABELS } from '../data/mountingSystems';
+import { RoofType } from '../types/designer.ts';
+import { ROOF_TYPE_LABELS } from '../data/mountingSystems.ts';
 
 interface RoofTypeSelectorProps {
   selectedRoofType: RoofType | null;

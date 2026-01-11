@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutResult, MountingComponent } from '../types';
+import { LayoutResult, MountingComponent } from '../types/designer.ts';
 
 interface ComponentsListProps {
   layoutResult: LayoutResult;

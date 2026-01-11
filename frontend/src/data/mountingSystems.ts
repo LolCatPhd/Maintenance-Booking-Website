@@ -1,4 +1,4 @@
-import { MountingSystem, RoofType, MountingCategory } from '../types';
+import { MountingSystem, RoofType, MountingCategory } from '../types/designer.ts';
 
 export const MOUNTING_SYSTEMS: MountingSystem[] = [
   // KDSolar Flush Mount Systems

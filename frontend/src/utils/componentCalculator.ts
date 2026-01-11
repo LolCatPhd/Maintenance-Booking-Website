@@ -2,8 +2,8 @@ import {
   MountingComponent,
   DesignConfig,
   LayoutResult
-} from '../types';
-import { componentUrls } from '../data/componentUrls';
+} from '../types/designer.ts';
+import { componentUrls } from '../data/componentUrls.ts';
 
 /**
  * Component mappings based on Excel tick marks
