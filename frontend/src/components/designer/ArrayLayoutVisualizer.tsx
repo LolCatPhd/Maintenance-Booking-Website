@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { DesignConfig, LayoutResult } from '../types/designer.ts';
+import { DesignConfig, LayoutResult } from '../../types/designer';
 
 interface ArrayLayoutVisualizerProps {
   config: DesignConfig;

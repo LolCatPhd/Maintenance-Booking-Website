@@ -1,6 +1,6 @@
 import React from 'react';
-import { MountingSystem, RoofType, MountingCategory, PanelOrientation } from '../types/designer.ts';
-import { getMountingSystemsByFilters } from '../data/mountingSystems.ts';
+import { MountingSystem, RoofType, MountingCategory, PanelOrientation } from '../../types/designer';
+import { getMountingSystemsByFilters } from '../../data/mountingSystems';
 
 interface MountingSystemSelectorProps {
   roofType: RoofType | null;

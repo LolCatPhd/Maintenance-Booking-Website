@@ -7,15 +7,15 @@ import {
   MountingSystem,
   DesignConfig,
   LayoutResult
-} from '../types/designer.ts';
-import { PanelSpecsForm } from '../components/designer/PanelSpecsForm.tsx';
-import { RoofTypeSelector } from '../components/designer/RoofTypeSelector.tsx';
-import { MountingCategorySelector } from '../components/designer/MountingCategorySelector.tsx';
-import { ManufacturerSelector } from '../components/designer/ManufacturerSelector.tsx';
-import { MountingSystemSelector } from '../components/designer/MountingSystemSelector.tsx';
-import { ArrayLayoutVisualizer } from '../components/designer/ArrayLayoutVisualizer.tsx';
-import { ComponentsList } from '../components/designer/ComponentsList.tsx';
-import { calculateLayout } from '../utils/componentCalculator.ts';
+} from '../types/designer';
+import { PanelSpecsForm } from '../components/designer/PanelSpecsForm';
+import { RoofTypeSelector } from '../components/designer/RoofTypeSelector';
+import { MountingCategorySelector } from '../components/designer/MountingCategorySelector';
+import { ManufacturerSelector } from '../components/designer/ManufacturerSelector';
+import { MountingSystemSelector } from '../components/designer/MountingSystemSelector';
+import { ArrayLayoutVisualizer } from '../components/designer/ArrayLayoutVisualizer';
+import { ComponentsList } from '../components/designer/ComponentsList';
+import { calculateLayout } from '../utils/componentCalculator';
 
 export default function DesignTool() {
   // Default values (standard 400W panel dimensions)

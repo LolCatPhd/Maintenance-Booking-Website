@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelDimensions, PanelOrientation, ArrayConfig } from '../types/designer.ts';
+import { PanelDimensions, PanelOrientation, ArrayConfig } from '../../types/designer';
 
 interface PanelSpecsFormProps {
   panelDimensions: PanelDimensions;
