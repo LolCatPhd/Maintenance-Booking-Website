@@ -69,11 +69,27 @@ export const ComponentsList: React.FC<ComponentsListProps> = ({
               >
                 <td className="py-3 px-2">
                   {component.image && (
-                    <img
-                      src={component.image}
-                      alt={component.name}
-                      className="w-12 h-12 object-contain rounded border border-gray-300 dark:border-gray-600"
-                    />
+                    component.url ? (
+                      <a
+                        href={component.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block hover:opacity-75 transition-opacity"
+                        title={`View ${component.name} on KD Solar`}
+                      >
+                        <img
+                          src={component.image}
+                          alt={component.name}
+                          className="w-12 h-12 object-contain rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                        />
+                      </a>
+                    ) : (
+                      <img
+                        src={component.image}
+                        alt={component.name}
+                        className="w-12 h-12 object-contain rounded border border-gray-300 dark:border-gray-600"
+                      />
+                    )
                   )}
                 </td>
                 <td className="py-3 px-2 text-gray-900 dark:text-gray-100">

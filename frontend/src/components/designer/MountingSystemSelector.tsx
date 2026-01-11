@@ -1,5 +1,5 @@
 import React from 'react';
-import { MountingSystem, RoofType, MountingCategory } from '../types';
+import { MountingSystem, RoofType, MountingCategory, PanelOrientation } from '../types';
 import { getMountingSystemsByFilters } from '../data/mountingSystems';
 
 interface MountingSystemSelectorProps {
@@ -7,6 +7,7 @@ interface MountingSystemSelectorProps {
   category: MountingCategory | null;
   manufacturer: string | null;
   selectedSystem: MountingSystem | null;
+  orientation: PanelOrientation;
   onSystemChange: (system: MountingSystem) => void;
 }
 
@@ -15,6 +16,7 @@ export const MountingSystemSelector: React.FC<MountingSystemSelectorProps> = ({
   category,
   manufacturer,
   selectedSystem,
+  orientation,
   onSystemChange
 }) => {
   if (!manufacturer) {
@@ -30,7 +32,25 @@ export const MountingSystemSelector: React.FC<MountingSystemSelectorProps> = ({
     );
   }
 
-  const availableSystems = getMountingSystemsByFilters(roofType, category, manufacturer);
+  const allSystems = getMountingSystemsByFilters(roofType, category, manufacturer);
+
+  // Filter systems based on orientation
+  const availableSystems = allSystems.filter(system => {
+    const name = system.name.toLowerCase();
+
+    // If system name contains "landscape", only show for landscape orientation
+    if (name.includes('landscape')) {
+      return orientation === 'landscape';
+    }
+
+    // If system name contains "portrait", only show for portrait orientation
+    if (name.includes('portrait')) {
+      return orientation === 'portrait';
+    }
+
+    // If neither landscape nor portrait in name, show for both orientations
+    return true;
+  });
 
   if (availableSystems.length === 0) {
     return (
