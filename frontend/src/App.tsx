@@ -12,6 +12,7 @@ import Payment from './pages/Payment';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
 import AdminDashboard from './pages/AdminDashboard';
+import DesignTool from './pages/DesignTool';
 
 function App() {
   const { user } = useAuthStore();
@@ -38,6 +39,10 @@ function App() {
           <Route
             path="solar-systems"
             element={user ? <SolarSystems /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="design-tool"
+            element={user ? <DesignTool /> : <Navigate to="/login" />}
           />
           <Route
             path="payment/:bookingId"

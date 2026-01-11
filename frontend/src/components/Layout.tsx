@@ -41,6 +41,9 @@ export default function Layout() {
                   <Link to="/solar-systems" className="text-gray-700 hover:text-solar-blue">
                     My Systems
                   </Link>
+                  <Link to="/design-tool" className="text-gray-700 hover:text-solar-blue">
+                    Design Tool
+                  </Link>
                   {user.role === 'ADMIN' && (
                     <Link to="/admin" className="text-gray-700 hover:text-solar-blue">
                       Admin
