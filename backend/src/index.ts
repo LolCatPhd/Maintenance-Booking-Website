@@ -30,10 +30,16 @@ app.use('/api/solar-systems', solarSystemRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Root endpoint for Railway health checks
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Artisan Solar Booking API' });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Solar Booking API is running' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Bind to 0.0.0.0 to accept connections from Railway's proxy
+app.listen(Number(PORT), '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT} and bound to 0.0.0.0`);
 });
