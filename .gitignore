@@ -28,6 +28,3 @@ Thumbs.db
 # Database
 *.db
 *.sqlite
-
-# Prisma
-backend/prisma/migrations/
