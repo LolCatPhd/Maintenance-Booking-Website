@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import { sendPasswordResetEmail, sendWelcomeEmail } from '../services/emailService';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -57,6 +58,11 @@ router.post('/register', async (req, res) => {
       { userId: user.id, role: user.role },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
+    );
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(user.email, user.firstName).catch(err =>
+      console.error('Failed to send welcome email:', err)
     );
 
     res.status(201).json({ user, token });
@@ -137,13 +143,13 @@ router.post('/forgot-password', async (req, res) => {
       },
     });
 
-    // TODO: Send email with reset link
-    // For now, return the token in development (remove this in production!)
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-    console.log('Password reset link:', resetLink);
-
-    // In production, send email here instead of logging
-    // await sendPasswordResetEmail(user.email, resetLink);
+    // Send password reset email
+    try {
+      await sendPasswordResetEmail(user.email, resetToken, user.firstName);
+    } catch (emailError) {
+      console.error('Failed to send password reset email:', emailError);
+      // Still return success to prevent email enumeration
+    }
 
     res.json({ message: 'If that email exists, a reset link has been sent' });
   } catch (error) {
