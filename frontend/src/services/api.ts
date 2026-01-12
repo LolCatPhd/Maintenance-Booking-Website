@@ -1,7 +1,30 @@
 import axios from 'axios';
 
+// Ensure baseURL always includes /api path
+const getBaseURL = () => {
+  const envURL = import.meta.env.VITE_API_URL;
+
+  // If no env URL, default to /api for local development
+  if (!envURL) {
+    return '/api';
+  }
+
+  // If env URL already ends with /api, use as-is
+  if (envURL.endsWith('/api')) {
+    return envURL;
+  }
+
+  // If env URL is a full URL without /api, append it
+  if (envURL.startsWith('http://') || envURL.startsWith('https://')) {
+    return `${envURL}/api`;
+  }
+
+  // Otherwise use as-is (covers cases like '/api' or relative paths)
+  return envURL;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: getBaseURL(),
 });
 
 api.interceptors.request.use((config) => {

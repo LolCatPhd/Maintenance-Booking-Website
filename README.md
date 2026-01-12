@@ -315,6 +315,12 @@ NODE_ENV=development
 VITE_API_URL=http://localhost:5000/api
 ```
 
+**Note:** The frontend automatically appends `/api` to the base URL if not present. This means you can set `VITE_API_URL` to either:
+- `http://localhost:5000/api` (explicit, recommended)
+- `http://localhost:5000` (will auto-append `/api`)
+
+For production deployments (Railway, Netlify), ensure your environment variable is set correctly. The code handles both formats.
+
 ## Features Overview
 
 ### For Clients
