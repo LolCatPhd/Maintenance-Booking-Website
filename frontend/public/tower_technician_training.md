@@ -56,6 +56,26 @@ Understanding the fundamental difference between AC and DC is critical for tower
 
 #### What Makes AC "Alternating"?
 
+Electricity is merely energy which is used to move electrons. Electrons are never made, or lost, or charged, or consumed. All of the work done with electricity is done with the movement of electrons.
+
+To use the cliched analogy of water mechanics, imagine a channel of water with a turbine in it. If the water is not flowing, the turbine doesn't turn and no work is being done. If the water is flowing continuously (as in direct current) the turbine will also spin continuously and work is being done. Likewise, if the water flowed back and forth (alternating current), the turbine would also spin back and forth, and work is being done. At no point is the status, quality, or quantity of water ever changed, other than with respect to the flow.
+
+##### Why Does AC Alternate? The Generator Connection
+
+The reason AC alternates comes down to how it's generated. In a power station, a steam turbine (or water turbine at a hydroelectric plant) spins a large generator. As the rotor rotates inside the magnetic field of the stator, the voltage naturally rises and falls in a sine wave pattern—one complete rotation produces one complete cycle of alternating current.
+
+**In South Africa, the grid operates at 50Hz**, which means generators must complete exactly 50 cycles per second. For a typical two-pole generator, this requires the turbine to spin at precisely **3000 rpm** (revolutions per minute). The relationship is simple: 3000 rpm ÷ 60 seconds = 50 rotations per second = 50Hz.
+
+**Grid Synchronization**: Before a generator can connect to the national grid, it must be precisely synchronized. This means matching:
+- **Frequency**: Turbine speed adjusted until output is exactly 50Hz
+- **Voltage**: Generator excitation adjusted to match grid voltage
+- **Phase angle**: The sine wave peaks must align with the grid's sine wave
+- **Phase sequence**: For three-phase systems, the phases must be in correct order
+
+Once synchronized, the generator is connected to the grid through a synchronizing breaker. From that moment, the generator is "locked" to the grid frequency—if it tries to speed up or slow down, the grid's massive inertia holds it at 50Hz.
+
+**Turbine Governor Control**: The turbine control system (governor) continuously adjusts steam flow to maintain stable operation. If the generator tries to slow down (perhaps due to increased electrical load), the governor opens steam valves to add more power. If it tries to speed up (load decreases), the governor restricts steam flow. This constant adjustment keeps the turbine spinning at exactly 3000 rpm, maintaining the 50Hz grid frequency that all equipment in South Africa depends upon.
+
 **Alternating Current (AC)** constantly changes direction - the electrons flow forward, then backward, in a continuous cycle.
 
 **Visual Analogy**: Imagine a piston in an engine moving back and forth. That's like AC - constant reversal of direction.
