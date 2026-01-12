@@ -46,7 +46,7 @@ export default function Training() {
     const stack: TOCItem[] = [];
 
     lines.forEach((line) => {
-      const match = line.match(/^(#{1,6})\s+(.+)$/);
+      const match = line.match(/^(#{1,3})\s+(.+)$/);
       if (match) {
         const level = match[1].length;
         const title = match[2].trim();
@@ -83,7 +83,7 @@ export default function Training() {
   // Track active section on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const headings = document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]');
+      const headings = document.querySelectorAll('h1[id], h2[id], h3[id]');
       let currentSection = '';
 
       headings.forEach((heading) => {

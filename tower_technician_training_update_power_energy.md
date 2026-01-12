@@ -26,7 +26,7 @@ This comprehensive training program covers electrical fundamentals through advan
 
 #### Content Topics
 - Voltage, current, resistance (Ohm's Law)
-- Power and energy (watts vs watt-hours)
+- Power and energy (watts vs watt-hours) - **DETAILED BELOW**
 - Circuit basics: series vs parallel
 - Practical exercises with multimeters
 
@@ -98,7 +98,7 @@ Energy (watt-hours) = Power (watts) × Time (hours)
 - V = Voltage in volts (V)
 - I = Current in amps (A)
 
-**Power in Practice: Tower Site Examples**
+##### Power in Practice: Tower Site Examples
 
 **Example 1: Radio Transceiver**
 - Voltage: 48V DC
@@ -144,7 +144,7 @@ Energy (watt-hours) = Power (watts) × Time (hours)
 - P = Power in watts (W)
 - t = Time in hours (h)
 
-**Energy in Practice: Tower Site Examples**
+##### Energy in Practice: Tower Site Examples
 
 **Example 1: Radio Transceiver (from above)**
 - Power: 480W
@@ -158,7 +158,7 @@ Energy (watt-hours) = Power (watts) × Time (hours)
 - Outage duration: 6 hours
 - Energy consumed: E = 3.38 kW × 6h = **20.28 kWh**
 
-**This tells you**:
+**This tells you**: 
 - How much energy your batteries must store
 - How much diesel your generator burned
 - What your backup time will be
@@ -186,12 +186,12 @@ Energy (watt-hours) = Power (watts) × Time (hours)
 **Question**: Which site costs more to operate per month?
 
 **Answer**:
-Site A: E = 0.8 kW × 720h = 576 kWh/month → Cost: R1,440/month
+Site A: E = 0.8 kW × 720h = 576 kWh/month → Cost: R1,440/month  
 Site B: E = 4 kW × 720h = 2,880 kWh/month → Cost: R7,200/month
 
 Site B costs 5 times more because even though it draws 5 times the *power*, it also accumulates 5 times the *energy* consumption over time.
 
-**Key Insight**:
+**Key Insight**: 
 - **Power (kW)** determines your instantaneous load and what size rectifier/generator you need
 - **Energy (kWh)** determines your operating cost and battery capacity
 
@@ -278,10 +278,344 @@ The theoretical calculation gives you the maximum. Reality is always less due to
    - 5 years old: ~70% capacity
    - End of life: <80% of rated capacity
 
-**Practical Rule of Thumb**:
+**Practical Rule of Thumb**: 
 In real-world calculations, use 70-80% of theoretical backup time:
 - Theoretical: 4 hours
 - Realistic: 4 × 0.75 = **3 hours**
+
+---
+
+##### Sizing Batteries: Working Backwards
+
+**The Question**: I need 6 hours of backup for a site that draws 3 kW. What battery capacity do I need?
+
+**Step 1: Calculate Required Energy**
+```
+Required Energy = Site Power × Desired Backup Time
+E = 3 kW × 6 hours = 18 kWh = 18,000 Wh
+```
+
+**Step 2: Convert to Amp-Hours at System Voltage**
+```
+Battery Capacity (Ah) = Required Energy (Wh) ÷ System Voltage (V)
+Capacity = 18,000 Wh ÷ 48V = 375 Ah
+```
+
+**Step 3: Add Safety Margin (Only 80% usable)**
+```
+Actual Battery Size = 375 Ah ÷ 0.80 = 469 Ah
+Round up to standard size: 500 Ah
+```
+
+**Step 4: Determine String Configuration**
+- If using 100Ah cells: Need 5 parallel strings (5 × 100Ah = 500Ah)
+- Each string has 24 cells in series (24 × 2V = 48V)
+- Total cells: 5 strings × 24 cells = 120 cells
+
+**Budget Check**:
+- Cost per cell: ~R800
+- Total cost: 120 cells × R800 = **R96,000** (just for batteries)
+
+---
+
+##### Power Factor: An Important Complication (Advanced)
+
+For **AC systems only**, there's an additional complexity called **power factor**.
+
+**The Problem**: Not all AC power does useful work.
+
+**Real Power (P)** - Watts (W):
+- The actual power doing useful work
+- What you pay for
+
+**Apparent Power (S)** - Volt-Amps (VA):
+- The total power flowing in the circuit
+- What your cables and transformers must handle
+
+**Power Factor (PF)**:
+```
+Power Factor = Real Power (W) ÷ Apparent Power (VA)
+
+PF ranges from 0 to 1 (or 0% to 100%)
+```
+
+**Example: Rectifier Input**
+- Voltage: 230V AC
+- Current: 20A
+- Apparent power: S = 230V × 20A = 4,600 VA = 4.6 kVA
+- Power factor: 0.95 (typical for modern rectifiers)
+- Real power: P = 4,600 VA × 0.95 = **4,370 W = 4.37 kW**
+
+**What This Means**:
+- Your rectifier input is rated in **VA** or **kVA**
+- Your output DC power is in **W** or **kW**
+- The input VA is always higher than output W (due to losses and power factor)
+
+**Rule of Thumb**: 
+- Good rectifier: PF ≥ 0.95
+- Older rectifier: PF = 0.70 - 0.85
+- Motors, fluorescent lights: PF = 0.50 - 0.80
+
+**Why It Matters**:
+- Eskom charges for real power (kWh), but your cables must handle apparent power (kVA)
+- Low power factor = wasted capacity in your distribution system
+- Modern rectifiers have "power factor correction" built in
+
+**For Tower Sites**:
+- **DC side** (batteries to equipment): Power factor = 1.0 (DC has no power factor issues)
+- **AC side** (Eskom to rectifier): Power factor = 0.90-0.98 (good modern rectifiers)
+
+---
+
+##### Common Mistakes and Misconceptions
+
+**Mistake 1: Confusing Power Ratings**
+
+❌ **Wrong**: "My battery is rated 200Ah, so it can power my 200W radio for 1 hour."
+
+✓ **Correct**: 
+- Battery: 48V, 200Ah = 9,600 Wh
+- Radio: 200W
+- Time: 9,600 Wh ÷ 200 W = 48 hours (theoretical)
+
+**Why it's wrong**: You must account for voltage. Amp-hours (Ah) is not the same as watt-hours (Wh).
+
+---
+
+**Mistake 2: Adding Powers Incorrectly**
+
+❌ **Wrong**: "I have a 2 kVA rectifier. I can add a 2 kW load because 2 + 2 = 4."
+
+✓ **Correct**: You can't directly add kVA and kW. Convert to same units first:
+- 2 kVA at 0.95 PF = 2 × 0.95 = 1.9 kW real power available
+- Can only add loads up to 1.9 kW total
+
+---
+
+**Mistake 3: Ignoring Efficiency**
+
+❌ **Wrong**: "My rectifier is 3 kW output, so I draw 3 kW from Eskom."
+
+✓ **Correct**: Rectifiers have ~90-95% efficiency:
+- Output: 3 kW
+- Efficiency: 92%
+- Input required: 3 kW ÷ 0.92 = **3.26 kW from Eskom**
+- The extra 0.26 kW becomes heat
+
+---
+
+**Mistake 4: Using Wrong Units for Batteries**
+
+❌ **Wrong**: "This battery is 100 Ah, so it stores 100 watt-hours of energy."
+
+✓ **Correct**: 
+- Battery: 2V cell, 100 Ah
+- Energy: 2V × 100Ah = **200 Wh** (not 100 Wh)
+- Full string (24 cells): 48V × 100Ah = **4,800 Wh = 4.8 kWh**
+
+Always multiply Ah by voltage to get Wh.
+
+---
+
+##### Practical Calculation Examples for Tower Work
+
+**Example 1: Monthly Operating Cost**
+
+**Given**:
+- Site average power: 2.8 kW
+- Eskom rate: R2.75/kWh
+- Operating: 24/7
+
+**Calculate monthly cost**:
+```
+Hours per month = 24 h/day × 30 days = 720 hours
+Monthly energy = 2.8 kW × 720 h = 2,016 kWh
+Monthly cost = 2,016 kWh × R2.75/kWh = R5,544
+```
+
+---
+
+**Example 2: Generator Fuel Consumption**
+
+**Given**:
+- Site power: 3.5 kW
+- Generator efficiency: 4 kWh per liter of diesel
+- Diesel price: R22/liter
+- Outage duration: 8 hours
+
+**Calculate fuel needed and cost**:
+```
+Energy required = 3.5 kW × 8 h = 28 kWh
+Fuel needed = 28 kWh ÷ 4 kWh/L = 7 liters
+Fuel cost = 7 L × R22/L = R154
+```
+
+---
+
+**Example 3: Solar System Sizing**
+
+**Given**:
+- Site daily energy: 3 kW × 24h = 72 kWh/day
+- Solar panel: 550W each
+- Sun hours per day: 5 hours (average in SA)
+- System efficiency: 80%
+
+**Calculate panels needed**:
+```
+Daily energy needed = 72 kWh
+Accounting for efficiency = 72 kWh ÷ 0.80 = 90 kWh
+Energy per panel per day = 550W × 5h = 2.75 kWh
+Panels needed = 90 kWh ÷ 2.75 kWh = 33 panels
+```
+
+---
+
+**Example 4: Comparing Equipment Efficiency**
+
+**Option A: Older Equipment**
+- Draws: 400W continuously
+- Annual energy: 400W × 8,760h = 3,504 kWh
+- Annual cost: 3,504 kWh × R2.75 = R9,636
+
+**Option B: New Efficient Equipment**
+- Draws: 280W continuously
+- Annual energy: 280W × 8,760h = 2,453 kWh
+- Annual cost: 2,453 kWh × R2.75 = R6,746
+
+**Savings**: R9,636 - R6,746 = **R2,890 per year**
+
+If new equipment costs R15,000 more:
+- Payback period: R15,000 ÷ R2,890 = **5.2 years**
+
+---
+
+##### Reading Equipment Nameplates
+
+When you look at equipment specifications, you'll see power ratings. Here's how to interpret them:
+
+**Rectifier Nameplate Example**:
+```
+Input: 230V AC, 20A, 50Hz, 4.6kVA
+Output: 54V DC, 80A, 4.32kW
+Efficiency: 94%
+```
+
+**What it means**:
+- **Input power**: 4.6 kVA (apparent power)
+- **Output power**: 4.32 kW (real power at DC)
+- **Input current**: 20A at 230V
+- **Output current**: 80A at 54V
+- **Efficiency check**: 4.32 kW ÷ 4.6 kVA = 0.94 (94%)
+
+**Radio Transceiver Nameplate**:
+```
+Input: 48V DC ± 20%
+Power: 120W typical, 180W max
+Current: 2.5A typical, 3.75A max
+```
+
+**What it means**:
+- Operates between 38.4V and 57.6V (48V ± 20%)
+- Normally draws 120W (2.5A at 48V)
+- During transmission peaks draws 180W (3.75A at 48V)
+- Design system for max, budget for typical
+
+---
+
+##### Quick Reference: Conversions and Formulas
+
+**Power Calculations**:
+```
+P = V × I           (DC circuits)
+P = V × I × PF      (AC circuits)
+P = I² × R          (from current and resistance)
+P = V² ÷ R          (from voltage and resistance)
+```
+
+**Energy Calculations**:
+```
+E (Wh) = P (W) × t (h)
+E (Wh) = V (V) × I (A) × t (h)
+E (Wh) = V (V) × Q (Ah)    [Q = charge in amp-hours]
+```
+
+**Battery Calculations**:
+```
+Energy (Wh) = Voltage (V) × Capacity (Ah)
+Backup Time (h) = Capacity (Ah) ÷ Load Current (A)
+Backup Time (h) = Energy (Wh) ÷ Load Power (W)
+```
+
+**Unit Conversions**:
+```
+1 kW = 1,000 W
+1 MW = 1,000,000 W = 1,000 kW
+1 kWh = 1,000 Wh
+1 MWh = 1,000 kWh = 1,000,000 Wh
+```
+
+---
+
+##### Self-Assessment Questions
+
+**Question 1**: A site draws 2.5 kW continuously. During a 6-hour power outage, how much energy does it consume?
+
+<details>
+<summary>Answer</summary>
+Energy = Power × Time  
+E = 2.5 kW × 6 h = 15 kWh
+
+This is the total amount of energy consumed over the 6 hours, which determines the battery capacity needed.
+</details>
+
+---
+
+**Question 2**: You have a 48V, 300Ah battery bank. A site draws 50A continuously. How long will the batteries last (theoretical)?
+
+<details>
+<summary>Answer</summary>
+Method 1 (using current):  
+Time = Capacity ÷ Current  
+t = 300 Ah ÷ 50 A = 6 hours
+
+Method 2 (using energy):  
+Battery energy = 48V × 300Ah = 14,400 Wh  
+Site power = 48V × 50A = 2,400 W  
+Time = 14,400 Wh ÷ 2,400 W = 6 hours
+
+Both methods give 6 hours (theoretical). In practice, expect ~4.5 hours (75% of theoretical).
+</details>
+
+---
+
+**Question 3**: Two sites consume the same total energy per month (2,000 kWh). Site A runs 24/7. Site B only runs 12 hours per day. Which site has higher power consumption?
+
+<details>
+<summary>Answer</summary>
+Site A: 
+- Hours per month = 24h/day × 30 days = 720h
+- Power = 2,000 kWh ÷ 720h = 2.78 kW
+
+Site B:
+- Hours per month = 12h/day × 30 days = 360h  
+- Power = 2,000 kWh ÷ 360h = 5.56 kW
+
+**Site B has higher power** (5.56 kW vs 2.78 kW) because it consumes the same total energy in half the time. It needs bigger rectifiers and cables, even though monthly energy cost is the same.
+
+This shows why understanding the difference between power and energy matters!
+</details>
+
+---
+
+**Question 4**: Equipment nameplate says "2.5 kVA, PF=0.85". How much real power (in watts) does it consume?
+
+<details>
+<summary>Answer</summary>
+Real Power = Apparent Power × Power Factor  
+P = 2.5 kVA × 0.85 = 2.125 kW = 2,125 W
+
+The equipment consumes 2,125 watts of real power, but your cables and transformers must handle 2,500 VA. The difference (2,500 - 2,125 = 375 VA) is "reactive power" that sloshes back and forth but doesn't do useful work.
+</details>
 
 ---
 
@@ -300,14 +634,14 @@ In real-world calculations, use 70-80% of theoretical backup time:
 - Formula: E = P × t
 
 **Critical for Tower Work**:
-✓ Use power (W) to size rectifiers, cables, and generators
-✓ Use energy (Wh) to size batteries and calculate costs
-✓ Battery capacity (Ah) × Voltage (V) = Energy storage (Wh)
-✓ Backup time = Battery energy ÷ Site power
-✓ Operating cost = Energy consumed × Price per kWh
-✓ Always add safety margins (70-80% of theoretical)
+✓ Use power (W) to size rectifiers, cables, and generators  
+✓ Use energy (Wh) to size batteries and calculate costs  
+✓ Battery capacity (Ah) × Voltage (V) = Energy storage (Wh)  
+✓ Backup time = Battery energy ÷ Site power  
+✓ Operating cost = Energy consumed × Price per kWh  
+✓ Always add safety margins (70-80% of theoretical)  
 
-**Remember**:
+**Remember**: 
 - Power is the *speedometer* (how fast you're going)
 - Energy is the *odometer* (how far you've traveled)
 - Both are important, but for different reasons!
@@ -342,15 +676,7 @@ Understanding the fundamental difference between AC and DC is critical for tower
 
 **Alternating Current (AC)** constantly changes direction - the electrons flow forward, then backward, in a continuous cycle.
 
-**Understanding Electron Movement:**
-
-Electricity is merely energy which is used to move electrons. Electrons are never made, or lost, or charged, or consumed. All of the work done with electricity is done with the movement of electrons.
-
-To use the cliched analogy of water mechanics, imagine a channel of water with a turbine in it. If the water is not flowing, the turbine doesn't turn and no work is being done. If the water is flowing continuously (as in direct current) the turbine will also spin continuously and work is being done. Likewise, if the water flowed back and forth (alternating current), the turbine would also spin back and forth, and work is being done. At no point is the status, quality, or quantity of water ever changed, other than with respect to the flow.
-
-**Why Does AC Alternate? The Generator Connection**
-
-The reason AC alternates comes down to how it's generated. In a power station, a steam turbine (or water turbine at a hydroelectric plant) spins a large generator. As the rotor rotates inside the magnetic field of the stator, the voltage naturally rises and falls in a sine wave pattern—one complete rotation produces one complete cycle of alternating current.
+**Visual Analogy**: Imagine a piston in an engine moving back and forth. That's like AC - constant reversal of direction.
 
 ##### Key Characteristics of AC:
 
@@ -1444,10 +1770,6 @@ Electrical hazards at tower sites are REAL, PRESENT, and DEADLY. The combination
 #### Introduction
 
 Every cellphone tower site has a similar power architecture, though details vary by operator and site age. Understanding this "power chain" is essential for troubleshooting and maintenance. We'll follow the power from Eskom all the way to the radio equipment.
-
-![Electrical Reticulation Diagram - Tower Site Power Architecture](/images/Training/electrical-reticulation-diagram.png)
-
-![Tower Site Architecture Overview](/images/Training/Architecture.webp)
 
 ---
 
