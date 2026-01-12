@@ -393,6 +393,8 @@ Most modern equipment has reverse polarity protection (fuse or diode), which wil
 
 Every cellphone tower site has a similar power architecture, though details vary by operator and site age. Understanding this "power chain" is essential for troubleshooting and maintenance. We'll follow the power from Eskom all the way to the radio equipment.
 
+![Electrical Reticulation Diagram - Tower Site Power Architecture](/images/Training/electrical-reticulation-diagram.png)
+
 ---
 
 #### The Complete Power Chain
