@@ -56,26 +56,6 @@ Understanding the fundamental difference between AC and DC is critical for tower
 
 #### What Makes AC "Alternating"?
 
-Electricity is merely energy which is used to move electrons. Electrons are never made, or lost, or charged, or consumed. All of the work done with electricity is done with the movement of electrons.
-
-To use the cliched analogy of water mechanics, imagine a channel of water with a turbine in it. If the water is not flowing, the turbine doesn't turn and no work is being done. If the water is flowing continuously (as in direct current) the turbine will also spin continuously and work is being done. Likewise, if the water flowed back and forth (alternating current), the turbine would also spin back and forth, and work is being done. At no point is the status, quality, or quantity of water ever changed, other than with respect to the flow.
-
-##### Why Does AC Alternate? The Generator Connection
-
-The reason AC alternates comes down to how it's generated. In a power station, a steam turbine (or water turbine at a hydroelectric plant) spins a large generator. As the rotor rotates inside the magnetic field of the stator, the voltage naturally rises and falls in a sine wave pattern—one complete rotation produces one complete cycle of alternating current.
-
-**In South Africa, the grid operates at 50Hz**, which means generators must complete exactly 50 cycles per second. For a typical two-pole generator, this requires the turbine to spin at precisely **3000 rpm** (revolutions per minute). The relationship is simple: 3000 rpm ÷ 60 seconds = 50 rotations per second = 50Hz.
-
-**Grid Synchronization**: Before a generator can connect to the national grid, it must be precisely synchronized. This means matching:
-- **Frequency**: Turbine speed adjusted until output is exactly 50Hz
-- **Voltage**: Generator excitation adjusted to match grid voltage
-- **Phase angle**: The sine wave peaks must align with the grid's sine wave
-- **Phase sequence**: For three-phase systems, the phases must be in correct order
-
-Once synchronized, the generator is connected to the grid through a synchronizing breaker. From that moment, the generator is "locked" to the grid frequency—if it tries to speed up or slow down, the grid's massive inertia holds it at 50Hz.
-
-**Turbine Governor Control**: The turbine control system (governor) continuously adjusts steam flow to maintain stable operation. If the generator tries to slow down (perhaps due to increased electrical load), the governor opens steam valves to add more power. If it tries to speed up (load decreases), the governor restricts steam flow. This constant adjustment keeps the turbine spinning at exactly 3000 rpm, maintaining the 50Hz grid frequency that all equipment in South Africa depends upon.
-
 **Alternating Current (AC)** constantly changes direction - the electrons flow forward, then backward, in a continuous cycle.
 
 **Visual Analogy**: Imagine a piston in an engine moving back and forth. That's like AC - constant reversal of direction.
@@ -353,13 +333,773 @@ Most modern equipment has reverse polarity protection (fuse or diode), which wil
 - Understand shock, arc flash, and fire risks
 - Recognize DC-specific dangers
 - Apply safe work practices at height
+- Assess risk levels for different tasks
+- Implement proper emergency response procedures
 
-#### Content Topics
-- Shock, arc flash, and fire risks
-- Why DC can be more dangerous than you think (arcing)
-- Working at height + electrical = extreme caution
-- Lock-out/Tag-out procedures
-- Emergency response procedures
+---
+
+#### Introduction: The Deadly Combination
+
+Working on cellphone towers presents a unique and extremely dangerous combination: **electrical hazards at height**. Either one alone is dangerous. Together, they're potentially lethal. A relatively minor electrical shock that might only cause pain at ground level can cause you to lose your grip or balance at height, resulting in a fatal fall.
+
+**Critical Fact**: In the telecommunications industry, electrical incidents account for approximately 30% of workplace fatalities, with falls from height being the leading cause of death. When these two hazards combine, the risk multiplies exponentially.
+
+This section will help you recognize, assess, and control electrical hazards specific to tower site work.
+
+---
+
+#### Understanding Electrical Hazards: The Four Main Dangers
+
+There are four primary ways electricity can harm or kill you:
+
+1. **Electric Shock** - Current flowing through your body
+2. **Arc Flash/Arc Blast** - Explosive release of energy
+3. **Electrical Burns** - Tissue damage from current or heat
+4. **Fire and Explosion** - Ignition of materials or gases
+
+At tower sites, you face all four of these hazards, plus the added risk of falls.
+
+---
+
+#### HAZARD 1: Electric Shock
+
+##### What is Electric Shock?
+
+Electric shock occurs when electrical current flows through your body. Your body is a conductor - mostly water and electrolytes - and current will flow if you provide a path between two different electrical potentials.
+
+##### How Much Current is Dangerous?
+
+| Current Level (mA) | Effect on Human Body |
+|-------------------|---------------------|
+| **< 1 mA** | Generally not felt |
+| **1-5 mA** | Perception threshold - tingling sensation |
+| **5-10 mA** | Painful, involuntary muscle contractions |
+| **10-20 mA** | "Let-go" threshold - may be unable to release grip |
+| **20-50 mA** | Severe pain, respiratory arrest possible |
+| **50-100 mA** | Ventricular fibrillation (heart stops pumping) - often fatal |
+| **> 100 mA** | Sustained ventricular fibrillation, severe burns |
+| **> 200 mA** | Severe burns, cardiac arrest, probable death |
+
+**Critical Point**: It takes very little current to kill you. As little as 50mA - about the same current used by a small LED light - can cause your heart to stop.
+
+---
+
+##### The Three Factors That Determine Shock Severity
+
+**1. Current Magnitude**
+- Determined by voltage and resistance (Ohm's Law: I = V/R)
+- Higher voltage = higher current (if resistance stays the same)
+- Your body resistance varies: 1,000Ω to 100,000Ω depending on conditions
+
+**2. Path Through Body**
+Most dangerous paths:
+- **Hand to hand** - current crosses chest, passes through heart
+- **Hand to foot** - current passes through torso and heart
+- **Head to foot** - current through brain and vital organs
+
+Less dangerous (but still serious):
+- **Foot to foot** - current may not reach vital organs
+- **Finger to finger** (same hand) - localized damage
+
+**At tower sites**: When working at height, you're often in positions where hand-to-hand or hand-to-foot contact is likely, making shocks more dangerous.
+
+**3. Duration of Contact**
+- Longer contact = more current flows = more damage
+- AC shock at 50Hz can cause "can't let go" effect
+- DC shock can cause muscle "locking" - physically unable to release
+- Even 1 second can be fatal if current is high enough
+
+---
+
+##### AC vs DC Shock: Important Differences
+
+**AC Shock (50Hz Mains):**
+- **Most dangerous frequency**: 50-60Hz is particularly dangerous for causing heart fibrillation
+- **"Let-go" threshold**: 10-20mA - muscles contract but you might be able to let go
+- **Zero crossing**: Current drops to zero 100 times/second, brief opportunity to break free
+- **Perception**: More painful, sharp sensation
+
+**DC Shock (Battery Systems):**
+- **Muscle locking**: Sustained current causes muscles to lock - can't let go voluntarily
+- **Higher "let-go" threshold**: ~50-80mA (but still dangerous)
+- **Continuous**: No zero crossing - arc sustains, muscle contraction sustained
+- **Perception**: Less painful initially, but more likely to cause prolonged exposure
+- **Internal damage**: Can cause more severe internal burns due to current concentration
+
+**At -48V DC Tower Sites:**
+While 48V is considered "low voltage," DON'T be complacent:
+- Wet conditions drop body resistance dramatically
+- Good contact (tight grip, sweaty hands) increases current flow
+- Direct heart contact (chest contact) still dangerous
+- Combined with height, even non-lethal shocks are dangerous
+
+---
+
+##### Real-World Scenario: The Fatal Assumption
+
+**Incident Report - What Happened:**
+A technician was troubleshooting a -48V DC distribution board. He assumed "48V is safe" and worked without PPE. His hands were sweaty from climbing. He gripped a metal bus bar with one hand while probing with his other hand. The bus bar had a fault - one side was at -48V, the other had drifted to -70V due to a ground fault.
+
+**Result:**
+- Voltage difference: ~22V across his chest
+- Wet hands: Body resistance dropped to ~500Ω
+- Current: 22V ÷ 500Ω = 44mA through his heart
+- Duration: 3 seconds (muscle locking, couldn't let go)
+- He survived but required hospitalization
+
+**Lesson Learned:**
+- NEVER assume low voltage is safe
+- ALWAYS use insulated tools and PPE
+- Test for voltage before touching
+- Use one-hand rule when possible
+- Wet conditions = extreme danger
+
+---
+
+#### HAZARD 2: Arc Flash and Arc Blast
+
+##### What is an Arc Flash?
+
+An arc flash is an explosive release of energy caused by an electrical arc. When an electrical fault creates a short circuit through air, it produces:
+
+1. **Intense Heat**: 35,000°C (four times hotter than the sun's surface)
+2. **Blinding Light**: Can cause temporary or permanent blindness
+3. **Pressure Wave**: Explosive blast that can throw you backwards
+4. **Molten Metal**: Vaporized conductor material becomes shrapnel
+5. **Toxic Gases**: Vaporized materials create poisonous fumes
+
+**At tower sites**, arc flash hazards exist:
+- In the Main Distribution Board (230V/400V AC)
+- At rectifier AC input terminals
+- Battery bus bars (though less common, still possible)
+- Any high-current DC connection
+
+---
+
+##### What Causes Arc Flashes?
+
+**Common Triggers:**
+1. **Accidental contact** - Tool slips and bridges two conductors
+2. **Dropped tools** - Wrench falls across bus bars
+3. **Vermin/contamination** - Rats, dust, moisture creating conduction paths
+4. **Equipment failure** - Insulation breakdown, loose connections
+5. **Working on energized equipment** - Removing covers, probing circuits
+6. **Improper maintenance** - Over-torqued connections, damaged insulation
+
+**Real Example at Tower Site:**
+Technician was replacing a fuse in a DC distribution board (DFB). The board was energized (-48V, 200A capacity). He used a screwdriver to pry out the old fuse. The screwdriver slipped and bridged the positive and negative bus bars.
+
+**Result:**
+- Instantaneous short circuit: 200A+ fault current
+- Arc flash: Intense heat and light
+- Molten copper splatter: Severe burns to face and hands
+- Pressure wave: Knocked him backwards
+- Only saved from fall by safety harness
+
+---
+
+##### Arc Flash Boundaries and Energy Levels
+
+Arc flash energy is measured in calories per square centimeter (cal/cm²). The higher the energy, the more severe the injury:
+
+| Energy Level | Injury Severity | Required PPE |
+|-------------|-----------------|--------------|
+| **< 1.2 cal/cm²** | Second-degree burn | Standard work clothing |
+| **1.2-4 cal/cm²** | Curable burns | Arc-rated clothing (4 cal/cm²) |
+| **4-8 cal/cm²** | Serious burns | Arc-rated clothing (8 cal/cm²) |
+| **8-25 cal/cm²** | Severe, possibly fatal | Arc-rated clothing (25 cal/cm²) |
+| **> 25 cal/cm²** | Usually fatal | Arc-rated clothing + face shield |
+
+**At typical tower sites:**
+- MDB with 63A breaker: ~4-8 cal/cm² (PPE category 2)
+- Rectifier AC input: ~8-12 cal/cm² (PPE category 3)
+- Battery bus bars: ~2-4 cal/cm² (PPE category 1-2)
+
+**Critical Rule**: If you can't de-energize equipment, you MUST wear appropriate arc-rated PPE.
+
+---
+
+##### DC Arc Flash: The Hidden Danger
+
+Many technicians assume arc flash is only an AC problem. **This is FALSE and DANGEROUS.**
+
+**Why DC Arcs are Actually WORSE:**
+1. **No zero crossing** - AC current drops to zero 100 times/second, helping extinguish arcs. DC is continuous - arc sustains
+2. **Harder to interrupt** - DC breakers and fuses must work much harder to break the arc
+3. **Battery systems** - Batteries can source ENORMOUS current (1000A+) with no current limiting
+4. **Longer duration** - Arc may sustain until physical separation or complete conductor destruction
+
+**Example: -48V Battery Bank Arc**
+"But it's only 48 volts!" - WRONG THINKING
+
+A battery bank with 500Ah capacity can theoretically source:
+- Short circuit current: 10,000A+ (limited only by conductor resistance)
+- Arc duration: Sustained until breaker trips or conductors melt
+- Energy released: Equivalent to multiple sticks of dynamite
+
+**Real Incident:**
+During battery installation, a wrench was dropped across battery terminals (48V, 800Ah bank). The arc:
+- Welded the wrench to the terminals
+- Vaporized part of the wrench
+- Created toxic fumes
+- Started a small fire in nearby plastic
+- Technician suffered severe burns to face (no face shield)
+
+**Lesson**: NEVER work on battery banks with tools that could drop or bridge terminals. Use insulated tools, work one-handed when possible, remove jewelry.
+
+---
+
+#### HAZARD 3: Electrical Burns
+
+Electrical burns are among the most serious injuries because they cause damage both externally and internally.
+
+##### Types of Electrical Burns
+
+**1. Contact Burns** (Direct current flow through tissue)
+- Entry and exit wounds where current enters/exits body
+- More severe than appearance suggests - damage is internal
+- Can cause muscle, nerve, and organ damage
+- Entry wound often smaller than exit wound
+- Tissue dies along current path
+
+**2. Arc Burns** (From arc flash heat)
+- Extreme temperature causes instantaneous burns
+- Can ignite clothing, causing secondary burns
+- Often affect face, arms, hands (exposed areas)
+- Can be third-degree even from brief exposure
+
+**3. Thermal Burns** (From hot equipment)
+- Touching hot conductors, transformers, resistors
+- Usually less severe than arc or contact burns
+- Common on hands and fingers
+
+**4. Flash Burns to Eyes**
+- UV radiation from arc damages cornea
+- Can cause temporary or permanent blindness
+- Often not noticed immediately (like welding flash)
+- Symptoms appear hours later: pain, tearing, light sensitivity
+
+---
+
+##### Why Electrical Burns are Especially Dangerous
+
+**1. Internal Damage Hidden:**
+External burn may be small, but internal damage extensive. Current follows path of least resistance through body:
+- Blood vessels (high conductivity) → vascular damage
+- Nerves (conductive) → nerve damage, paralysis
+- Muscles → muscle destruction, kidney damage from breakdown products
+- Bones heat up → deep tissue burns
+
+**2. Delayed Complications:**
+- Cardiac arrhythmias hours or days later
+- Kidney failure from muscle breakdown (rhabdomyolysis)
+- Compartment syndrome (swelling cuts off blood flow)
+- Infection of internal damaged tissue
+
+**3. Long Recovery:**
+- Multiple surgeries often required
+- Amputation sometimes necessary
+- Permanent nerve damage common
+- Psychological trauma
+
+**Medical Rule**: ANY electrical burn requires medical evaluation, even if it looks minor externally.
+
+---
+
+#### HAZARD 4: Fire and Explosion
+
+Electricity is an ignition source. At tower sites, you have multiple fire/explosion risks:
+
+##### Common Electrical Fire Causes
+
+**1. Overloaded Circuits**
+- Cables carrying more current than rated for
+- Heat buildup in conductors
+- Insulation melts, ignites
+- Common in older installations with added equipment
+
+**2. Poor Connections**
+- Loose terminals create high resistance
+- Resistance generates heat (P = I²R)
+- Can melt insulation, start fires
+- Battery terminal fires particularly dangerous
+
+**3. Short Circuits**
+- Fault creates massive current flow
+- Instant heating of conductors
+- Arc ignites nearby materials
+- Can start fires in cable trays, equipment
+
+**4. Battery-Related Fires**
+
+**Hydrogen Gas Explosion Risk:**
+- Lead-acid batteries produce hydrogen gas during charging
+- Hydrogen is explosive: 4-75% concentration in air
+- Spark near battery = explosion risk
+- Adequate ventilation CRITICAL
+- "Flame arrestor" vents on batteries prevent flashback
+
+**Thermal Runaway:**
+- Battery cell overheats
+- Heat causes more current, more heat (runaway effect)
+- Can cause battery to rupture, catch fire
+- Lithium-ion batteries particularly susceptible
+- Can release toxic, flammable gases
+
+**Real Incident - Battery Room Fire:**
+A battery charger failed, overcharging batteries. Hydrogen gas accumulated in poorly ventilated room. When technician opened door, metal handle created spark. Explosion blew out windows, injured technician, destroyed equipment.
+
+**Prevention:**
+- Proper ventilation (battery rooms must have air exchange)
+- No sparks/flames near batteries
+- Monitor charging voltage/temperature
+- Battery rooms need special fire suppression
+
+**5. Lightning Strikes**
+- Direct strike to tower
+- Massive current surge through systems
+- Can vaporize conductors
+- Start fires in equipment rooms
+- Proper lightning protection essential
+
+---
+
+#### The Height Factor: Why Electrical + Height = Extreme Danger
+
+Working at height transforms every electrical hazard into a potentially fatal hazard. Here's why:
+
+##### 1. Involuntary Muscle Contractions
+
+When shocked, your muscles contract violently and involuntarily:
+- **At ground level**: You might fall down, injure yourself, but survive
+- **At height**: Involuntary movement can:
+  - Cause you to lose your grip
+  - Make you push away from the tower
+  - Throw you off balance
+  - Result in a fatal fall
+
+**Real Incident:**
+Technician touched an energized conductor while on tower (40m high). The shock was minor (240V, brief contact). His arm jerked involuntarily, he lost his grip on the safety cable, and swung out. His fall arrest lanyard caught him, but he hit the tower structure, suffering serious injuries. The electrical shock itself was minor - the fall nearly killed him.
+
+##### 2. Disorientation and Loss of Consciousness
+
+Electrical shocks can cause:
+- Temporary disorientation
+- Dizziness
+- Brief loss of consciousness
+- Confusion
+
+**At height**: Any of these effects can cause you to fall while trying to move or descend.
+
+##### 3. Rescue Complications
+
+If you're shocked and incapacitated at height:
+- Rescue is complex and time-consuming
+- You may be suspended in harness (suspension trauma)
+- Medical help is delayed
+- CPR cannot be performed until you're lowered
+- Every minute matters for cardiac arrest
+
+**Lesson**: At height, even "minor" electrical hazards become life-threatening. Your safety margin is ZERO.
+
+---
+
+#### Environmental Factors: Weather and Conditions
+
+Environmental conditions at tower sites greatly affect electrical hazard severity:
+
+##### 1. Rain, Moisture, Humidity
+
+**Effect on Hazards:**
+- **Dramatically reduces body resistance**: Dry skin ~100,000Ω → Wet skin ~1,000Ω
+- **Increases shock severity**: Same voltage = 100x more current
+- **Creates conduction paths**: Water on equipment creates shorts
+- **Corrosion**: Accelerates deterioration of connections and insulation
+
+**Rain + Height + Electrical = EXTREME DANGER**
+
+You should NEVER work on energized electrical equipment in wet conditions.
+
+**Real Scenario:**
+Technician was troubleshooting power issue during light rain. He thought "48V DC is safe." His hands and clothes were wet. He touched a -48V bus bar. Body resistance was ~800Ω. Current: 48V ÷ 800Ω = 60mA - enough to cause ventricular fibrillation. He survived but required defibrillation.
+
+**Rules:**
+- NO electrical work in rain or wet conditions
+- Wait for equipment to dry before working
+- Use waterproof enclosures
+- Wear dry gloves (wet gloves are useless)
+
+##### 2. Wind
+
+**Effect on Hazards:**
+- Makes working at height more dangerous
+- Can blow objects into energized equipment
+- Can cause you to lose balance while handling tools
+- Increases fatigue, reduces concentration
+
+**Rules:**
+- No work at height in winds >30 km/h (check company policy)
+- Secure all tools to prevent dropping
+- Extra caution with long objects (ladders, cables)
+
+##### 3. Lightning Storms
+
+**Effect on Hazards:**
+- Direct strike to tower = FATAL
+- Strike to nearby tower = induced surges can electrify entire structure
+- Equipment damage common
+- You become a potential lightning rod if you're the highest point
+
+**Rules:**
+- **STOP WORK immediately when lightning is visible or thunder heard**
+- Get off tower and away from structure (at least 30m)
+- Seek shelter in vehicle or building
+- Wait 30 minutes after last thunder before resuming
+- NEVER shelter under tower during lightning
+
+**Lightning Facts:**
+- Can strike 10km from storm center ("bolt from the blue")
+- Average bolt: 300 million volts, 30,000 amps
+- Tower structure designed to conduct lightning safely, but YOU must not be on it
+- Lightning kills ~24 people per year in South Africa
+
+##### 4. Temperature Extremes
+
+**Heat:**
+- Increases fatigue → mistakes more likely
+- Sweating → lower body resistance
+- Dehydration → poor judgment
+
+**Cold:**
+- Reduces dexterity → fumbling with tools
+- Numb hands → don't feel minor shocks as warning
+- Reduced flexibility → awkward positions more likely
+
+**Rules:**
+- Take frequent breaks in extreme temperatures
+- Stay hydrated (heat) or warm (cold)
+- Never rush - fatigue causes mistakes
+
+---
+
+#### Lock-Out/Tag-Out (LOTO): Your Primary Protection
+
+Lock-Out/Tag-Out is the single most important procedure for preventing electrical accidents.
+
+##### What is LOTO?
+
+A systematic procedure to ensure equipment is de-energized and cannot be re-energized while you're working on it.
+
+**Lock-Out**: Physical lock prevents switch/breaker from being turned on  
+**Tag-Out**: Warning tag identifies who locked it out and why
+
+##### The Six Steps of LOTO
+
+**Step 1: PREPARATION**
+- Identify all energy sources (AC input, DC battery, solar)
+- Identify all disconnects and isolation points
+- Get appropriate locks, tags, and PPE
+- Inform all affected personnel
+
+**Step 2: NOTIFICATION**
+- Tell everyone who might be affected
+- Explain what you're doing and how long
+- Post signs at equipment and control points
+- Log out with operations center
+
+**Step 3: SHUT DOWN**
+- Power down equipment normally (if possible)
+- Follow manufacturer's shutdown procedure
+- Let batteries discharge naturally if needed
+
+**Step 4: ISOLATION**
+- Open circuit breakers
+- Pull fuses
+- Open disconnects
+- Physically separate conductors if possible
+
+**Step 5: LOCK-OUT/TAG-OUT**
+- Apply YOUR lock to each isolation point
+- Apply YOUR tag with:
+  - Your name
+  - Date and time
+  - Reason for lockout
+  - Contact information
+- Each person working applies THEIR OWN lock
+
+**Step 6: VERIFY ZERO ENERGY**
+- **TEST for voltage** - use voltage tester
+- Test on known live source first (prove tester works)
+- Test all conductors
+- **TREAT AS LIVE UNTIL PROVEN DEAD**
+- Test again after any break in work
+
+**CRITICAL**: Use the right tester (AC vs DC). A DC tester won't show AC voltage!
+
+---
+
+##### Common LOTO Mistakes (DON'T DO THESE)
+
+❌ **Assuming someone else locked it out**  
+✓ Apply your own lock. Never trust someone else's lockout.
+
+❌ **Not testing for voltage**  
+✓ ALWAYS test. Isolation switches can fail. Batteries can backfeed.
+
+❌ **Removing someone else's lock**  
+✓ NEVER. Only remove your own lock when YOUR work is complete.
+
+❌ **Not locking out ALL energy sources**  
+✓ AC + DC + Solar + Battery + Generator. Lock out EVERYTHING.
+
+❌ **Working alone on LOTO'd equipment**  
+✓ Always have someone nearby for emergencies.
+
+❌ **Not testing tester before use**  
+✓ Prove tester works on known live source first.
+
+---
+
+##### Special LOTO Considerations for Tower Sites
+
+**Multiple Energy Sources:**
+- AC from Eskom
+- DC from batteries (can't be "turned off")
+- Solar input (can't be turned off during day)
+- Backup generator (can auto-start)
+
+**Strategy**: You must isolate ALL paths. For battery work:
+1. Lock out AC input (prevent charging)
+2. Disconnect load (prevent discharge)
+3. Disconnect battery string physically
+4. Short and ground string (dissipate stored energy)
+
+**Remote Sites:**
+- Coordinate with operations center
+- They can remotely see system status
+- They can disable remote restarts
+- Document everything
+
+---
+
+#### Risk Assessment: Before You Start
+
+Before ANY electrical work, perform a formal risk assessment:
+
+##### Hazard Identification Questions
+
+1. **What electrical sources are present?**
+   - AC voltage levels and currents
+   - DC voltage levels and capacities
+   - Stored energy (batteries, capacitors)
+
+2. **What is the shock hazard level?**
+   - Voltage levels
+   - Available fault current
+   - Wet/dry conditions
+   - Path through body
+
+3. **What is the arc flash hazard level?**
+   - Short circuit current available
+   - Clearing time of protection devices
+   - Distance from arc source
+   - Required PPE rating
+
+4. **What are the height-related risks?**
+   - Working position stability
+   - Fall distance if shocked
+   - Rescue access and time
+   - Fall arrest system integrity
+
+5. **What environmental factors exist?**
+   - Weather (rain, wind, lightning)
+   - Temperature extremes
+   - Lighting conditions
+   - Access difficulties
+
+##### Risk Control Hierarchy
+
+Use this hierarchy to control risks (in order of effectiveness):
+
+**1. ELIMINATION** (Best)
+- De-energize equipment completely (LOTO)
+- Work during scheduled outages
+- Use offline test equipment
+
+**2. SUBSTITUTION**
+- Use lower voltage test methods
+- Remote monitoring instead of on-site
+- Use insulated tools instead of bare
+
+**3. ENGINEERING CONTROLS**
+- Install barriers around live parts
+- Use interlocked enclosures
+- Provide proper lighting
+- Install rescue equipment
+
+**4. ADMINISTRATIVE CONTROLS**
+- Develop safe work procedures
+- Provide training
+- Require permits for energized work
+- Enforce LOTO procedures
+
+**5. PPE** (Last Resort)
+- Arc-rated clothing
+- Insulated gloves
+- Safety glasses/face shields
+- Fall protection
+
+**Never rely on PPE alone - use all layers of protection**
+
+---
+
+#### Emergency Response: When Things Go Wrong
+
+Despite all precautions, electrical accidents happen. Your response in the first minutes can save a life.
+
+##### If Someone is Being Shocked
+
+**DO NOT TOUCH THEM** - You'll be shocked too!
+
+**Immediate Actions:**
+1. **Turn off power** - Hit emergency stop, open breaker
+2. **If you can't turn it off immediately**:
+   - Use non-conductive object (dry wood, plastic) to separate victim from source
+   - DON'T use anything metal or wet
+3. **Once separated**, call for help immediately
+4. **Check for response** - Is victim conscious?
+5. **Begin CPR if needed** (see below)
+6. **Don't move victim** unless in immediate danger (fire, fall risk)
+
+##### CPR for Electrical Shock Victims
+
+Electrical shock often causes cardiac arrest. CPR is critical:
+
+**If Victim is Unconscious and Not Breathing:**
+
+1. **Call for help** - Emergency number, site contact
+2. **Position victim** - Flat on back on firm surface
+3. **Start CPR immediately**:
+   - 30 chest compressions (center of chest, 5-6cm deep, 100-120/min)
+   - 2 rescue breaths
+   - Continue until help arrives or victim recovers
+4. **Use AED if available** (Automated External Defibrillator)
+5. **Don't stop** - Continue until medical professionals arrive
+
+**At Height**: Lower victim safely if possible, but don't delay CPR. If victim is suspended in harness, rescue immediately (suspension trauma can be fatal in 15-30 minutes).
+
+##### For Burns
+
+**Immediate Treatment:**
+1. **Stop the burning** - Remove from source
+2. **Cool the burn** - Room temperature water (not ice)
+3. **Cover loosely** - Clean, dry cloth
+4. **Don't apply** creams, ointments, ice
+5. **Get medical help** - ALL electrical burns need medical evaluation
+
+**For Eye Flash:**
+1. Flush eyes with clean water
+2. Don't rub eyes
+3. Cover with clean cloth
+4. Get medical help immediately
+
+##### Reporting and Investigation
+
+After ANY electrical incident (even near-misses):
+
+1. **Preserve the scene** - Don't disturb evidence
+2. **Report immediately** - To supervisor and safety officer
+3. **Document everything**:
+   - What happened
+   - When and where
+   - Who was involved
+   - What equipment was involved
+   - Injuries sustained
+4. **Investigate root cause** - Not to blame, but to prevent recurrence
+5. **Implement corrective actions** - Fix the underlying problem
+
+**Near-Miss Reporting is CRITICAL**: Today's near-miss is tomorrow's fatality if not addressed.
+
+---
+
+#### Key Safety Rules for Tower Electrical Work
+
+##### The 10 Commandments of Electrical Safety
+
+1. **ASSUME ALL CIRCUITS ARE LIVE** until proven dead with a tester
+2. **USE LOCKOUT/TAGOUT** on every job involving electrical systems
+3. **WEAR APPROPRIATE PPE** - especially at height
+4. **NEVER WORK ALONE** on electrical systems
+5. **KEEP ONE HAND IN POCKET** when working near live circuits (prevents hand-to-hand path)
+6. **RESPECT DC VOLTAGE** - 48V can kill under right conditions
+7. **NEVER WORK IN WET CONDITIONS** on electrical equipment
+8. **GET OFF TOWER IN LIGHTNING** - immediately, no exceptions
+9. **INSPECT TOOLS DAILY** - damaged insulation = deadly tool
+10. **WHEN IN DOUBT, STOP AND ASK** - no question is stupid if it keeps you alive
+
+---
+
+#### Self-Assessment Questions
+
+**Question 1**: Why is a 50mA electrical shock potentially more dangerous at 40m height than at ground level?
+
+<details>
+<summary>Answer</summary>
+While 50mA is sufficient to cause ventricular fibrillation (fatal), at height the shock can cause involuntary muscle contractions leading to loss of grip or balance. Even if the shock itself doesn't kill you, the resulting fall likely will. At ground level, you might fall down but survive. At height, loss of grip = fatal fall.
+</details>
+
+**Question 2**: You're about to work on a -48V battery bank. It's only 48 volts, so you decide PPE isn't necessary. What's wrong with this thinking?
+
+<details>
+<summary>Answer</summary>
+Multiple errors:
+1. 48V CAN be lethal in wet conditions or with good contact
+2. Battery banks can source 10,000A+ causing severe arc flash
+3. Dropped tool can create sustained DC arc (no zero crossing)
+4. Even non-lethal shock at height can cause fatal fall
+5. PPE protects against arc flash, not just shock
+Correct approach: Full PPE, insulated tools, LOTO procedures, treat as if it were higher voltage.
+</details>
+
+**Question 3**: During tower work, you see lightning in the distance but haven't heard thunder yet. Your supervisor says to keep working. What should you do?
+
+<details>
+<summary>Answer</summary>
+STOP WORK IMMEDIATELY and get off the tower. Lightning can strike up to 10km from the storm center ("bolt from the blue"). If you can see it, you're in danger. The "30-30 rule": If less than 30 seconds between lightning and thunder, take shelter. Wait 30 minutes after last thunder before resuming. Your life is more important than finishing the job. If supervisor insists, refuse under "right to refuse unsafe work" - this is a clear life-threatening hazard.
+</details>
+
+**Question 4**: You've locked out a rectifier for maintenance. Your testing shows zero voltage. Halfway through the job, you take a lunch break. When you return, do you need to test for voltage again?
+
+<details>
+<summary>Answer</summary>
+YES - ALWAYS retest after any break in work. Reasons:
+1. Someone might have removed lockout by mistake
+2. Backfeed from another source
+3. Solar input might have started (sun came out)
+4. Generator might have started
+5. Battery voltage might have appeared due to load changes
+NEVER assume. Test every time before touching. This habit saves lives.
+</details>
+
+---
+
+#### Summary: Your Life Depends on This
+
+Electrical hazards at tower sites are REAL, PRESENT, and DEADLY. The combination of electricity and height means you have zero margin for error. A mistake that might cause pain at ground level can kill you at height.
+
+**Remember:**
+✓ Electricity is invisible - you can't see it, hear it, or smell it until it's too late  
+✓ Low voltage doesn't mean low danger - 48V can kill  
+✓ DC is not safer than AC - in many ways it's more dangerous  
+✓ Height multiplies every electrical hazard  
+✓ Weather conditions change everything  
+✓ LOTO is your primary protection - use it every time  
+✓ PPE is your last line of defense - wear it  
+✓ When in doubt, STOP and ask  
+
+**Your family wants you home safe. Treat every electrical hazard with the respect it deserves.**
+
+---
 
 ---
 
@@ -412,8 +1152,6 @@ Most modern equipment has reverse polarity protection (fuse or diode), which wil
 #### Introduction
 
 Every cellphone tower site has a similar power architecture, though details vary by operator and site age. Understanding this "power chain" is essential for troubleshooting and maintenance. We'll follow the power from Eskom all the way to the radio equipment.
-
-![Electrical Reticulation Diagram - Tower Site Power Architecture](/images/Training/electrical-reticulation-diagram.png)
 
 ---
 
