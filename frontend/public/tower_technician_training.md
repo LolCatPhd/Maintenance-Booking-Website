@@ -58,7 +58,15 @@ Understanding the fundamental difference between AC and DC is critical for tower
 
 **Alternating Current (AC)** constantly changes direction - the electrons flow forward, then backward, in a continuous cycle.
 
-**Visual Analogy**: Imagine a piston in an engine moving back and forth. That's like AC - constant reversal of direction.
+**Understanding Electron Movement:**
+
+Electricity is merely energy which is used to move electrons. Electrons are never made, or lost, or charged, or consumed. All of the work done with electricity is done with the movement of electrons.
+
+To use the cliched analogy of water mechanics, imagine a channel of water with a turbine in it. If the water is not flowing, the turbine doesn't turn and no work is being done. If the water is flowing continuously (as in direct current) the turbine will also spin continuously and work is being done. Likewise, if the water flowed back and forth (alternating current), the turbine would also spin back and forth, and work is being done. At no point is the status, quality, or quantity of water ever changed, other than with respect to the flow.
+
+**Why Does AC Alternate? The Generator Connection**
+
+The reason AC alternates comes down to how it's generated. In a power station, a steam turbine (or water turbine at a hydroelectric plant) spins a large generator. As the rotor rotates inside the magnetic field of the stator, the voltage naturally rises and falls in a sine wave pattern—one complete rotation produces one complete cycle of alternating current.
 
 ##### Key Characteristics of AC:
 
