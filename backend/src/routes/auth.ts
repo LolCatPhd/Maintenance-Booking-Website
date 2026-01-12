@@ -15,6 +15,13 @@ const registerSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   phone: z.string().min(10),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  formattedAddress: z.string().optional(),
+  streetAddress: z.string().optional(),
+  city: z.string().optional(),
+  province: z.string().optional(),
+  postalCode: z.string().optional(),
 });
 
 const loginSchema = z.object({
@@ -43,6 +50,13 @@ router.post('/register', async (req, res) => {
         firstName: data.firstName,
         lastName: data.lastName,
         phone: data.phone,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        formattedAddress: data.formattedAddress,
+        streetAddress: data.streetAddress,
+        city: data.city,
+        province: data.province,
+        postalCode: data.postalCode,
       },
       select: {
         id: true,
