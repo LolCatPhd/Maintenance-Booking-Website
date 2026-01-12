@@ -134,29 +134,42 @@ export default function Training() {
     const lines = markdownContent.split('\n');
     const result: string[] = [];
     let isCollapsed = false;
-    let inModule = false;
+    let currentModuleLevel = 0;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
+      const h2Match = line.match(/^##\s+(.+)$/);
       const h1Match = line.match(/^#\s+(.+)$/);
 
-      if (h1Match) {
-        // Found a new H1 (module)
-        const title = h1Match[1].trim();
+      if (h2Match) {
+        // Found a new H2 (MODULE level)
+        const title = h2Match[1].trim();
         const moduleId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         isCollapsed = collapsedModules.has(moduleId);
-        inModule = true;
+        currentModuleLevel = 2;
 
-        if (!isCollapsed) {
-          result.push(line);
+        // Always show the H2 heading itself
+        result.push(line);
+      } else if (h1Match) {
+        // H1 level - always show (document title)
+        result.push(line);
+        currentModuleLevel = 0;
+        isCollapsed = false;
+      } else if (currentModuleLevel === 2) {
+        // We're inside a MODULE section (H2)
+        // Check if this is a new H2 (which would end the current module)
+        const nextH2 = line.match(/^##\s+/);
+        if (nextH2) {
+          // New module starting, handle it in next iteration
+          i--;
+          continue;
         }
-      } else if (inModule) {
-        // We're inside a module
+
         if (!isCollapsed) {
           result.push(line);
         }
       } else {
-        // Before first module (preamble)
+        // Before first module or between major sections
         result.push(line);
       }
     }
@@ -166,8 +179,8 @@ export default function Training() {
 
   const renderTOCItem = (item: TOCItem) => {
     const isActive = activeSection === item.id;
-    const paddingLeft = item.level === 1 ? 'pl-2' : item.level === 2 ? 'pl-6' : 'pl-8';
-    const isModule = item.level === 1;
+    const paddingLeft = item.level === 1 ? 'pl-2' : item.level === 2 ? 'pl-4' : 'pl-8';
+    const isModule = item.level === 2; // MODULEs are H2 level
     const isCollapsed = collapsedModules.has(item.id);
 
     return (
@@ -200,7 +213,7 @@ export default function Training() {
               isActive
                 ? 'bg-blue-100 text-blue-700 font-semibold'
                 : 'text-gray-700 hover:bg-gray-100'
-            } ${isModule ? 'font-bold text-base' : ''}`}
+            } ${isModule ? 'font-bold text-sm' : item.level === 1 ? 'font-bold text-base' : ''}`}
           >
             {item.title}
           </button>
