@@ -13,48 +13,27 @@ export default function Training() {
   const [markdownContent, setMarkdownContent] = useState<string>('');
   const [activeSection, setActiveSection] = useState<string>('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // TODO: Replace this placeholder content when the actual .md file is provided
-  const placeholderContent = `# AC/DC Training
-
-Welcome to the AC/DC Training module. This content will be replaced with your training material.
-
-## Chapter 1: Introduction
-
-This is where your first chapter content will appear.
-
-### Section 1.1: Getting Started
-
-Content for getting started section.
-
-### Section 1.2: Prerequisites
-
-Content for prerequisites section.
-
-## Chapter 2: Advanced Topics
-
-This is where your second chapter content will appear.
-
-### Section 2.1: Deep Dive
-
-Content for deep dive section.
-
-## Chapter 3: Practical Applications
-
-This is where your third chapter content will appear.
-
-### Section 3.1: Real-world Examples
-
-Content for real-world examples.
-
-## Chapter 4: Summary
-
-Final chapter content goes here.
-`;
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    // TODO: Load actual markdown content from file or API
-    setMarkdownContent(placeholderContent);
+    // Load the AC/DC training markdown content
+    fetch('/tower_technician_training.md')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to load training content');
+        }
+        return response.text();
+      })
+      .then((text) => {
+        setMarkdownContent(text);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error loading training content:', err);
+        setError('Failed to load training content. Please try again later.');
+        setIsLoading(false);
+      });
   }, []);
 
   // Parse markdown to extract table of contents
@@ -323,10 +302,15 @@ Final chapter content goes here.
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Table of Contents</h2>
             <nav className="space-y-1">
-              {tableOfContents.length > 0 ? (
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <p className="text-gray-500 text-sm mt-2">Loading...</p>
+                </div>
+              ) : tableOfContents.length > 0 ? (
                 tableOfContents.map(renderTOCItem)
               ) : (
-                <p className="text-gray-500 text-sm">No content loaded yet</p>
+                <p className="text-gray-500 text-sm">No content available</p>
               )}
             </nav>
           </div>
@@ -335,16 +319,26 @@ Final chapter content goes here.
         {/* Main Content */}
         <main className="flex-1 lg:ml-0">
           <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
-            {markdownContent ? (
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <p className="text-gray-500 text-lg mt-4">Loading training content...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+                  <svg className="w-12 h-12 text-red-400 mx-auto mb-4" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <p className="text-red-800 text-lg font-semibold">{error}</p>
+                </div>
+              </div>
+            ) : (
               <article className="prose prose-lg max-w-none">
                 <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
                   {markdownContent}
                 </ReactMarkdown>
               </article>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">Loading training content...</p>
-              </div>
             )}
           </div>
         </main>
