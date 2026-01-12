@@ -6,33 +6,25 @@ const getBaseURL = () => {
 
   // If no env URL, default to /api for local development
   if (!envURL) {
-    console.log('[API] No VITE_API_URL set, using default: /api');
     return '/api';
   }
 
   // If env URL already ends with /api, use as-is
   if (envURL.endsWith('/api')) {
-    console.log('[API] VITE_API_URL already ends with /api:', envURL);
     return envURL;
   }
 
   // If env URL is a full URL without /api, append it
   if (envURL.startsWith('http://') || envURL.startsWith('https://')) {
-    const baseURL = `${envURL}/api`;
-    console.log('[API] Appending /api to URL:', envURL, '→', baseURL);
-    return baseURL;
+    return `${envURL}/api`;
   }
 
   // Otherwise use as-is (covers cases like '/api' or relative paths)
-  console.log('[API] Using VITE_API_URL as-is:', envURL);
   return envURL;
 };
 
-const baseURL = getBaseURL();
-console.log('[API] Final baseURL configured:', baseURL);
-
 const api = axios.create({
-  baseURL,
+  baseURL: getBaseURL(),
 });
 
 api.interceptors.request.use((config) => {
