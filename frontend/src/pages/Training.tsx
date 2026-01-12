@@ -15,6 +15,7 @@ export default function Training() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const [collapsedModules, setCollapsedModules] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     // Load the AC/DC training markdown content
@@ -114,23 +115,97 @@ export default function Training() {
     setIsMobileMenuOpen(false);
   };
 
+  const toggleModule = (moduleId: string) => {
+    setCollapsedModules((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(moduleId)) {
+        newSet.delete(moduleId);
+      } else {
+        newSet.add(moduleId);
+      }
+      return newSet;
+    });
+  };
+
+  // Filter markdown content to hide collapsed modules
+  const filteredMarkdownContent = useMemo(() => {
+    if (!markdownContent || collapsedModules.size === 0) return markdownContent;
+
+    const lines = markdownContent.split('\n');
+    const result: string[] = [];
+    let isCollapsed = false;
+    let inModule = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const h1Match = line.match(/^#\s+(.+)$/);
+
+      if (h1Match) {
+        // Found a new H1 (module)
+        const title = h1Match[1].trim();
+        const moduleId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        isCollapsed = collapsedModules.has(moduleId);
+        inModule = true;
+
+        if (!isCollapsed) {
+          result.push(line);
+        }
+      } else if (inModule) {
+        // We're inside a module
+        if (!isCollapsed) {
+          result.push(line);
+        }
+      } else {
+        // Before first module (preamble)
+        result.push(line);
+      }
+    }
+
+    return result.join('\n');
+  }, [markdownContent, collapsedModules]);
+
   const renderTOCItem = (item: TOCItem) => {
     const isActive = activeSection === item.id;
-    const paddingLeft = item.level === 1 ? 'pl-4' : item.level === 2 ? 'pl-6' : 'pl-8';
+    const paddingLeft = item.level === 1 ? 'pl-2' : item.level === 2 ? 'pl-6' : 'pl-8';
+    const isModule = item.level === 1;
+    const isCollapsed = collapsedModules.has(item.id);
 
     return (
       <div key={item.id}>
-        <button
-          onClick={() => scrollToSection(item.id)}
-          className={`block w-full text-left py-2 px-2 rounded transition-colors ${paddingLeft} ${
-            isActive
-              ? 'bg-blue-100 text-blue-700 font-semibold'
-              : 'text-gray-700 hover:bg-gray-100'
-          }`}
-        >
-          {item.title}
-        </button>
-        {item.children && item.children.length > 0 && (
+        <div className="flex items-center">
+          {isModule && item.children && item.children.length > 0 && (
+            <button
+              onClick={() => toggleModule(item.id)}
+              className="p-2 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+              aria-label={isCollapsed ? 'Expand module' : 'Collapse module'}
+            >
+              <svg
+                className={`w-4 h-4 text-gray-600 transition-transform ${
+                  isCollapsed ? '' : 'rotate-90'
+                }`}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+          <button
+            onClick={() => scrollToSection(item.id)}
+            className={`flex-1 text-left py-2 px-2 rounded transition-colors ${paddingLeft} ${
+              isActive
+                ? 'bg-blue-100 text-blue-700 font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            } ${isModule ? 'font-bold text-base' : ''}`}
+          >
+            {item.title}
+          </button>
+        </div>
+        {item.children && item.children.length > 0 && !isCollapsed && (
           <div>{item.children.map(renderTOCItem)}</div>
         )}
       </div>
@@ -336,7 +411,7 @@ export default function Training() {
             ) : (
               <article className="prose prose-lg max-w-none">
                 <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
-                  {markdownContent}
+                  {filteredMarkdownContent}
                 </ReactMarkdown>
               </article>
             )}
