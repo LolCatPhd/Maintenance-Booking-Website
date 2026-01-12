@@ -30,6 +30,9 @@ export default function Layout() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
+              <Link to="/training" className="text-gray-700 hover:text-solar-blue">
+                Training
+              </Link>
               {user ? (
                 <>
                   <Link to="/dashboard" className="text-gray-700 hover:text-solar-blue">
