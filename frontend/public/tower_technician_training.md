@@ -687,6 +687,8 @@ Every cellphone tower site has a similar power architecture, though details vary
 
 ![Electrical Reticulation Diagram - Tower Site Power Architecture](/images/Training/electrical-reticulation-diagram.png)
 
+![Tower Site Architecture Overview](/images/Training/Architecture.webp)
+
 ---
 
 #### The Complete Power Chain
