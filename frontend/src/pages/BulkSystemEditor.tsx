@@ -171,8 +171,8 @@ export default function BulkSystemEditor() {
     }
   };
 
-  const uniqueProvinces = Array.from(new Set(users.map(u => u.province).filter(Boolean))).sort();
-  const uniqueCities = Array.from(new Set(users.map(u => u.city).filter(Boolean))).sort();
+  const uniqueProvinces = Array.from(new Set(users.map(u => u.province).filter((p): p is string => Boolean(p)))).sort();
+  const uniqueCities = Array.from(new Set(users.map(u => u.city).filter((c): c is string => Boolean(c)))).sort();
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
