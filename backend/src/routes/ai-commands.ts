@@ -43,9 +43,9 @@ router.post('/execute', authenticateToken, requireAdmin, async (req: AuthRequest
 });
 
 async function parseCommand(command: string): Promise<ParsedCommand> {
-  // Use gemini-pro which is stable and available on v1beta API
+  // Use gemini-1.5-pro which is the current stable model
   const model = genAI.getGenerativeModel({
-    model: 'gemini-pro',
+    model: 'gemini-1.5-pro',
     generationConfig: {
       temperature: 0.1, // More deterministic for command parsing
     }
