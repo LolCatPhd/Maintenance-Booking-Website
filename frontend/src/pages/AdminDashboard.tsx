@@ -15,6 +15,10 @@ export default function AdminDashboard() {
     maxBookings: 4,
     excludeWeekends: true,
   });
+  const [aiCommand, setAiCommand] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState<any>(null);
+  const [showAIHelper, setShowAIHelper] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -77,6 +81,32 @@ export default function AdminDashboard() {
       loadData();
     } catch (error) {
       alert('Failed to update slot');
+    }
+  };
+
+  const handleAICommand = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!aiCommand.trim()) return;
+
+    setAiLoading(true);
+    setAiResult(null);
+
+    try {
+      const response = await adminAPI.executeAICommand(aiCommand);
+      setAiResult(response.data);
+      setAiCommand('');
+      // Reload slots if we're on the slots tab
+      if (activeTab === 'slots') {
+        loadData();
+      }
+    } catch (error: any) {
+      setAiResult({
+        success: false,
+        error: error.response?.data?.error || 'Failed to execute command',
+        details: error.response?.data?.details,
+      });
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -215,12 +245,120 @@ export default function AdminDashboard() {
 
             {activeTab === 'slots' && (
               <div>
+                {/* AI Command Helper */}
+                <div className="mb-6 card bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center space-x-2">
+                      <svg
+                        className="w-6 h-6 text-purple-600"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                      <h3 className="text-lg font-bold text-gray-800">AI Assistant</h3>
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-semibold">
+                        BETA
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setShowAIHelper(!showAIHelper)}
+                      className="text-purple-600 hover:text-purple-800 font-semibold text-sm"
+                    >
+                      {showAIHelper ? 'Hide' : 'Show'}
+                    </button>
+                  </div>
+
+                  {showAIHelper && (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Use natural language to manage availability slots. Try commands like:
+                        <span className="block mt-2 italic text-gray-500">
+                          "add availability slots on wednesday for the next 5 weeks"
+                        </span>
+                        <span className="block italic text-gray-500">
+                          "create slots every friday for 3 weeks with max 6 bookings"
+                        </span>
+                      </p>
+
+                      <form onSubmit={handleAICommand} className="space-y-4">
+                        <div>
+                          <input
+                            type="text"
+                            value={aiCommand}
+                            onChange={(e) => setAiCommand(e.target.value)}
+                            placeholder="Enter your command..."
+                            className="input-field"
+                            disabled={aiLoading}
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          disabled={aiLoading || !aiCommand.trim()}
+                          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {aiLoading ? 'Processing...' : 'Execute Command'}
+                        </button>
+                      </form>
+
+                      {aiResult && (
+                        <div
+                          className={`mt-4 p-4 rounded-lg ${
+                            aiResult.success
+                              ? 'bg-green-50 border border-green-200'
+                              : 'bg-red-50 border border-red-200'
+                          }`}
+                        >
+                          {aiResult.success ? (
+                            <div>
+                              <p className="font-semibold text-green-800 mb-2">
+                                ✓ {aiResult.result.message}
+                              </p>
+                              {aiResult.result.slots && (
+                                <div className="text-sm text-green-700">
+                                  <p className="font-medium mb-1">Created slots:</p>
+                                  <ul className="list-disc list-inside">
+                                    {aiResult.result.slots.slice(0, 5).map((slot: any) => (
+                                      <li key={slot.id}>
+                                        {new Date(slot.date).toLocaleDateString()} - Max{' '}
+                                        {slot.maxBookings} bookings
+                                      </li>
+                                    ))}
+                                    {aiResult.result.slots.length > 5 && (
+                                      <li className="text-gray-600">
+                                        ... and {aiResult.result.slots.length - 5} more
+                                      </li>
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div>
+                              <p className="font-semibold text-red-800 mb-1">
+                                ✗ {aiResult.error}
+                              </p>
+                              {aiResult.details && (
+                                <p className="text-sm text-red-700">{aiResult.details}</p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 <div className="mb-6">
                   <button
                     onClick={() => setShowAddSlots(!showAddSlots)}
                     className="btn-primary"
                   >
-                    {showAddSlots ? 'Cancel' : 'Add Availability Slots'}
+                    {showAddSlots ? 'Cancel' : 'Add Availability Slots (Manual)'}
                   </button>
                 </div>
 

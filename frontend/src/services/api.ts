@@ -98,6 +98,7 @@ export const adminAPI = {
     api.post(`/admin/bookings/${bookingId}/maintenance`, data),
   getStats: () => api.get('/admin/stats'),
   getUserLocations: () => api.get('/admin/users/locations'),
+  executeAICommand: (command: string) => api.post('/ai-commands/execute', { command }),
 };
 
 export default api;
