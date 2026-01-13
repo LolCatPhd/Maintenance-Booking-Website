@@ -55,12 +55,17 @@ router.get('/', authenticateToken, requireAdmin, async (req: AuthRequest, res) =
     // Get total count
     const totalUsers = await prisma.user.count({ where });
 
-    // Get users with their systems
+    // Get users with their systems and components
     const users = await prisma.user.findMany({
       where,
       include: {
         solarSystems: {
           orderBy: { createdAt: 'desc' },
+          include: {
+            components: {
+              orderBy: { componentType: 'asc' },
+            },
+          },
         },
         _count: {
           select: {
@@ -210,6 +215,9 @@ router.put('/user/:id', authenticateToken, requireAdmin, async (req: AuthRequest
       city,
       province,
       postalCode,
+      latitude,
+      longitude,
+      formattedAddress,
     } = req.body;
 
     const updateData: any = {};
@@ -222,6 +230,9 @@ router.put('/user/:id', authenticateToken, requireAdmin, async (req: AuthRequest
     if (city !== undefined) updateData.city = city;
     if (province !== undefined) updateData.province = province;
     if (postalCode !== undefined) updateData.postalCode = postalCode;
+    if (latitude !== undefined) updateData.latitude = latitude;
+    if (longitude !== undefined) updateData.longitude = longitude;
+    if (formattedAddress !== undefined) updateData.formattedAddress = formattedAddress;
 
     const user = await prisma.user.update({
       where: { id },
@@ -235,6 +246,63 @@ router.put('/user/:id', authenticateToken, requireAdmin, async (req: AuthRequest
   } catch (error: any) {
     console.error('Error updating user:', error);
     res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+// GET /api/bulk-systems/system/:id/components - Get components for a system
+router.get('/system/:id/components', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+
+    const components = await prisma.systemComponent.findMany({
+      where: { solarSystemId: id },
+      orderBy: { componentType: 'asc' },
+    });
+
+    res.json(components);
+  } catch (error: any) {
+    console.error('Error fetching components:', error);
+    res.status(500).json({ error: 'Failed to fetch components' });
+  }
+});
+
+// PUT /api/bulk-systems/system/:id/components - Update all components for a system
+router.put('/system/:id/components', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { components } = req.body;
+
+    if (!Array.isArray(components)) {
+      return res.status(400).json({ error: 'Components must be an array' });
+    }
+
+    // Delete existing components for this system
+    await prisma.systemComponent.deleteMany({
+      where: { solarSystemId: id },
+    });
+
+    // Create new components
+    const createdComponents = await Promise.all(
+      components.map((component: any) =>
+        prisma.systemComponent.create({
+          data: {
+            solarSystemId: id,
+            componentType: component.componentType,
+            manufacturer: component.manufacturer || '',
+            model: component.model || '',
+            serialNumber: component.serialNumber || null,
+            installDate: component.installDate ? new Date(component.installDate) : new Date(),
+            warrantyExpiry: component.warrantyExpiry ? new Date(component.warrantyExpiry) : null,
+            notes: component.notes || null,
+          },
+        })
+      )
+    );
+
+    res.json(createdComponents);
+  } catch (error: any) {
+    console.error('Error updating components:', error);
+    res.status(500).json({ error: 'Failed to update components' });
   }
 });
 
