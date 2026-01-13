@@ -17,6 +17,13 @@ model User {
   role                UserRole       @default(CLIENT)
   resetToken          String?
   resetTokenExpiry    DateTime?
+  latitude            Float?
+  longitude           Float?
+  formattedAddress    String?
+  streetAddress       String?
+  city                String?
+  province            String?
+  postalCode          String?
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
   solarSystems        SolarSystem[]

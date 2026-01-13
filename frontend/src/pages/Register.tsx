@@ -2,6 +2,17 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import AddressSearchMap from '../components/AddressSearchMap';
+
+interface LocationData {
+  latitude: number;
+  longitude: number;
+  formattedAddress: string;
+  streetAddress?: string;
+  city?: string;
+  province?: string;
+  postalCode?: string;
+}
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -12,6 +23,7 @@ export default function Register() {
     lastName: '',
     phone: '',
   });
+  const [locationData, setLocationData] = useState<LocationData | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,11 +38,20 @@ export default function Register() {
       return;
     }
 
+    if (!locationData) {
+      setError('Please select your location on the map');
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { confirmPassword, ...registerData } = formData;
-      const response = await authAPI.register(registerData);
+      const fullData = {
+        ...registerData,
+        ...locationData,
+      };
+      const response = await authAPI.register(fullData);
       setAuth(response.data.user, response.data.token);
       navigate('/dashboard');
     } catch (err: any) {
@@ -46,7 +67,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
+      <div className="max-w-4xl w-full">
         <div className="card">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
@@ -112,6 +133,14 @@ export default function Register() {
                 className="input-field"
               />
             </div>
+
+            {/* Address Search and Map */}
+            <div className="col-span-full">
+              <AddressSearchMap
+                onLocationSelect={setLocationData}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Password
