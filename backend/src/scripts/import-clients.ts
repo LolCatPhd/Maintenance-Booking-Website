@@ -12,6 +12,21 @@ interface ClientRecord {
   address: string;
 }
 
+interface MapboxFeature {
+  center: [number, number];
+  place_name: string;
+  text: string;
+  address?: string;
+  context?: Array<{
+    id: string;
+    text: string;
+  }>;
+}
+
+interface MapboxResponse {
+  features?: MapboxFeature[];
+}
+
 // Mapbox geocoding function
 async function geocodeAddress(address: string, mapboxToken: string) {
   if (!address || address.trim() === '') {
@@ -28,7 +43,7 @@ async function geocodeAddress(address: string, mapboxToken: string) {
       `limit=1`
     );
 
-    const data = await response.json();
+    const data: MapboxResponse = await response.json();
 
     if (data.features && data.features.length > 0) {
       const feature = data.features[0];
