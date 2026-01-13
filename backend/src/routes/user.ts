@@ -16,6 +16,13 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
         lastName: true,
         phone: true,
         role: true,
+        latitude: true,
+        longitude: true,
+        formattedAddress: true,
+        streetAddress: true,
+        city: true,
+        province: true,
+        postalCode: true,
         createdAt: true,
       },
     });
@@ -32,11 +39,33 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
 
 router.put('/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const { firstName, lastName, phone } = req.body;
+    const {
+      firstName,
+      lastName,
+      phone,
+      latitude,
+      longitude,
+      formattedAddress,
+      streetAddress,
+      city,
+      province,
+      postalCode,
+    } = req.body;
 
     const user = await prisma.user.update({
       where: { id: req.userId },
-      data: { firstName, lastName, phone },
+      data: {
+        firstName,
+        lastName,
+        phone,
+        ...(latitude !== undefined && { latitude }),
+        ...(longitude !== undefined && { longitude }),
+        ...(formattedAddress !== undefined && { formattedAddress }),
+        ...(streetAddress !== undefined && { streetAddress }),
+        ...(city !== undefined && { city }),
+        ...(province !== undefined && { province }),
+        ...(postalCode !== undefined && { postalCode }),
+      },
       select: {
         id: true,
         email: true,
@@ -44,6 +73,13 @@ router.put('/profile', authenticateToken, async (req: AuthRequest, res) => {
         lastName: true,
         phone: true,
         role: true,
+        latitude: true,
+        longitude: true,
+        formattedAddress: true,
+        streetAddress: true,
+        city: true,
+        province: true,
+        postalCode: true,
       },
     });
 

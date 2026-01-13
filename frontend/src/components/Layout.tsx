@@ -52,9 +52,9 @@ export default function Layout() {
                       Admin
                     </Link>
                   )}
-                  <span className="text-gray-700">
+                  <Link to="/profile" className="text-gray-700 hover:text-solar-blue">
                     {user.firstName} {user.lastName}
-                  </span>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"

@@ -16,6 +16,7 @@ import PaymentCancel from './pages/PaymentCancel';
 import AdminDashboard from './pages/AdminDashboard';
 import DesignTool from './pages/DesignTool';
 import Training from './pages/Training';
+import Profile from './pages/Profile';
 
 function App() {
   const { user } = useAuthStore();
@@ -33,6 +34,10 @@ function App() {
           <Route
             path="dashboard"
             element={user ? <Dashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="profile"
+            element={user ? <Profile /> : <Navigate to="/login" />}
           />
           <Route
             path="bookings"
