@@ -101,7 +101,6 @@ export default function BulkSystemEditor() {
   const [pagination, setPagination] = useState<BulkResponse['pagination'] | null>(null);
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
   const [editingSystem, setEditingSystem] = useState<string | null>(null);
-  const [editFormData, setEditFormData] = useState<Partial<SolarSystem>>({});
   const [componentTableData, setComponentTableData] = useState<ComponentTableData>({
     inverter: { brand: '', rating: '', quantity: 0, serialNumbers: [] },
     batteries: { brand: '', rating: '', quantity: 0, serialNumbers: [] },
@@ -159,13 +158,11 @@ export default function BulkSystemEditor() {
 
   const startEditingSystem = (system: SolarSystem) => {
     setEditingSystem(system.id);
-    setEditFormData(system);
     loadComponentsIntoTable(system);
   };
 
   const cancelEditing = () => {
     setEditingSystem(null);
-    setEditFormData({});
   };
 
   const deleteSystem = async (systemId: string) => {
