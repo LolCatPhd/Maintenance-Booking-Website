@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import Map, { Marker, NavigationControl } from 'react-map-gl';
+import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -29,7 +29,7 @@ export default function AddressSearchMap({ onLocationSelect, initialLocation }: 
     longitude: initialLocation?.longitude || 28.0473,
     zoom: initialLocation ? 14 : 10,
   });
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Search for addresses using Mapbox Geocoding API
   const searchAddress = useCallback(async (query: string) => {
@@ -182,7 +182,7 @@ export default function AddressSearchMap({ onLocationSelect, initialLocation }: 
       <div className="h-96 rounded-lg overflow-hidden border border-gray-300">
         <Map
           {...viewport}
-          onMove={(evt) => setViewport(evt.viewState)}
+          onMove={(evt: any) => setViewport(evt.viewState)}
           mapboxAccessToken={MAPBOX_TOKEN}
           mapStyle="mapbox://styles/mapbox/streets-v12"
           style={{ width: '100%', height: '100%' }}
