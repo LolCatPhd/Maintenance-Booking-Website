@@ -8,6 +8,7 @@ import solarSystemRoutes from './routes/solarSystem';
 import paymentRoutes from './routes/payment';
 import adminRoutes from './routes/admin';
 import aiCommandsRoutes from './routes/ai-commands';
+import bulkSystemsRoutes from './routes/bulk-systems';
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.use('/api/solar-systems', solarSystemRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai-commands', aiCommandsRoutes);
+app.use('/api/bulk-systems', bulkSystemsRoutes);
 
 // Root endpoint for Railway health checks
 app.get('/', (req, res) => {

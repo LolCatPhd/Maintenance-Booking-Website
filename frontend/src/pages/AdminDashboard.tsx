@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../services/api';
 import AdminMap from '../components/AdminMap';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'slots' | 'locations'>('overview');
   const [stats, setStats] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
@@ -184,6 +186,48 @@ export default function AdminDashboard() {
                   <div className="card bg-gradient-to-r from-red-500 to-red-600 text-white">
                     <h3 className="text-sm font-semibold mb-2">Revenue</h3>
                     <p className="text-3xl font-bold">${stats.totalRevenue}</p>
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="mt-6">
+                  <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <button
+                      onClick={() => navigate('/admin/bulk-systems')}
+                      className="card hover:shadow-lg transition-shadow text-left border-2 border-blue-500"
+                    >
+                      <h3 className="text-lg font-semibold text-blue-600 mb-2">
+                        📋 Bulk System Editor
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        View and edit all client solar systems. Add equipment details, monitoring URLs, and manage multiple systems per client.
+                      </p>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('locations')}
+                      className="card hover:shadow-lg transition-shadow text-left border-2 border-green-500"
+                    >
+                      <h3 className="text-lg font-semibold text-green-600 mb-2">
+                        🗺️ Client Locations Map
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        View all clients on a map with advanced filtering by location, date, and booking status.
+                      </p>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('slots')}
+                      className="card hover:shadow-lg transition-shadow text-left border-2 border-purple-500"
+                    >
+                      <h3 className="text-lg font-semibold text-purple-600 mb-2">
+                        📅 Manage Availability
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Create and manage booking slots. Use AI assistant to quickly add availability for multiple weeks.
+                      </p>
+                    </button>
                   </div>
                 </div>
               </div>

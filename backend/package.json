@@ -10,7 +10,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "import-clients": "ts-node src/scripts/import-clients.ts"
+    "import-clients": "ts-node src/scripts/import-clients.ts",
+    "import-equipment": "ts-node src/scripts/import-equipment.ts"
   },
   "keywords": [
     "solar",
