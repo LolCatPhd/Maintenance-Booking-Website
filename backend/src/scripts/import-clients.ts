@@ -83,7 +83,7 @@ async function geocodeAddress(address: string, mapboxToken: string) {
   }
 }
 
-// Parse CSV file
+// Parse CSV file - properly handles quoted fields and commas
 function parseCSV(filePath: string): ClientRecord[] {
   const content = fs.readFileSync(filePath, 'utf-8');
   const lines = content.split('\n');
@@ -94,14 +94,33 @@ function parseCSV(filePath: string): ClientRecord[] {
     const line = lines[i].trim();
     if (!line) continue;
 
-    // Split by comma, but handle quotes
-    const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-    if (!matches || matches.length < 10) continue;
+    // Parse CSV properly: split by comma, but respect quoted fields
+    const fields: string[] = [];
+    let currentField = '';
+    let insideQuotes = false;
 
-    const clientName = matches[1]?.replace(/"/g, '').trim() || '';
-    const contact = matches[7]?.replace(/"/g, '').trim() || '';
-    const email = matches[8]?.replace(/"/g, '').trim() || '';
-    const address = matches[9]?.replace(/"/g, '').trim() || '';
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+
+      if (char === '"') {
+        insideQuotes = !insideQuotes;
+      } else if (char === ',' && !insideQuotes) {
+        fields.push(currentField.trim());
+        currentField = '';
+      } else {
+        currentField += char;
+      }
+    }
+    fields.push(currentField.trim()); // Add last field
+
+    // CSV columns: Filename,Client Name,Invoice/Quote Numbers,Document Type,Date,Total,Status,Contact,Email,Address
+    // Indices:      0        1          2                      3            4    5     6      7       8     9
+    if (fields.length < 10) continue;
+
+    const clientName = fields[1] || '';
+    const contact = fields[7] || '';
+    const email = fields[8] || '';
+    const address = fields[9] || '';
 
     // Skip if no client name or contact
     if (!clientName || !contact || clientName === 'MOH') {
