@@ -43,7 +43,7 @@ router.post('/execute', authenticateToken, requireAdmin, async (req: AuthRequest
 });
 
 async function parseCommand(command: string): Promise<ParsedCommand> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
   const prompt = `You are a command parser for an admin booking system. Parse the following natural language command into a structured JSON format.
 
