@@ -79,6 +79,17 @@ router.get('/slots', async (req, res) => {
               notIn: ['CANCELLED'],
             },
           },
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+              },
+            },
+          },
         },
       },
       orderBy: {
@@ -128,7 +139,7 @@ router.post('/slots/bulk', async (req, res) => {
 
       slots.push({
         date: new Date(date),
-        maxBookings: maxBookings || 4,
+        maxBookings: maxBookings || 2,
         isAvailable: true,
       });
     }
