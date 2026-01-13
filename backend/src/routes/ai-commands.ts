@@ -1,7 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { authenticateAdmin } from '../middleware/auth';
+import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -14,7 +14,7 @@ interface ParsedCommand {
   parameters: any;
 }
 
-router.post('/execute', authenticateAdmin, async (req, res) => {
+router.post('/execute', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const { command } = req.body;
 
@@ -122,7 +122,7 @@ async function createSlots(params: any) {
       const daysUntilTarget = (dayOfWeek - date.getDay() + 7) % 7;
       date.setDate(date.getDate() + daysUntilTarget + (week * 7));
 
-      const slot = await prisma.availabilitySlot.create({
+      const slot = await prisma.availableSlot.create({
         data: {
           date,
           maxBookings,
@@ -139,7 +139,7 @@ async function createSlots(params: any) {
     const currentDate = new Date(start);
 
     while (currentDate <= end) {
-      const slot = await prisma.availabilitySlot.create({
+      const slot = await prisma.availableSlot.create({
         data: {
           date: new Date(currentDate),
           maxBookings,
@@ -167,7 +167,7 @@ async function createSlots(params: any) {
 async function deleteSlots(params: any) {
   const { startDate, endDate } = params;
 
-  const deleted = await prisma.availabilitySlot.deleteMany({
+  const deleted = await prisma.availableSlot.deleteMany({
     where: {
       date: {
         gte: new Date(startDate),
@@ -185,7 +185,7 @@ async function deleteSlots(params: any) {
 async function updateSlotStatus(params: any) {
   const { slotId, isAvailable } = params;
 
-  const slot = await prisma.availabilitySlot.update({
+  const slot = await prisma.availableSlot.update({
     where: { id: slotId },
     data: { isAvailable },
   });
