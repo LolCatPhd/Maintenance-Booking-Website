@@ -245,7 +245,7 @@ export default function AdminDashboard() {
 
             {activeTab === 'slots' && (
               <div>
-                {/* AI Command Helper */}
+                {/* AI Assistant */}
                 <div className="mb-6 card bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200">
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center space-x-2">
@@ -262,7 +262,7 @@ export default function AdminDashboard() {
                       </svg>
                       <h3 className="text-lg font-bold text-gray-800">AI Assistant</h3>
                       <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-semibold">
-                        BETA
+                        Powered by Groq
                       </span>
                     </div>
                     <button
