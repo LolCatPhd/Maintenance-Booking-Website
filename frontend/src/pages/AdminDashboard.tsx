@@ -9,7 +9,6 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'slots' | 'locations'>('overview');
   const [stats, setStats] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
-  const [slots, setSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddSlots, setShowAddSlots] = useState(false);
   const [bulkSlotForm, setBulkSlotForm] = useState({
@@ -36,11 +35,8 @@ export default function AdminDashboard() {
       } else if (activeTab === 'bookings') {
         const response = await adminAPI.getBookings();
         setBookings(response.data);
-      } else if (activeTab === 'slots') {
-        const response = await adminAPI.getSlots();
-        setSlots(response.data);
-      } else if (activeTab === 'locations') {
-        // AdminMap component handles its own data loading
+      } else if (activeTab === 'slots' || activeTab === 'locations') {
+        // Calendar and Map components handle their own data loading
         setLoading(false);
         return;
       }
@@ -67,7 +63,7 @@ export default function AdminDashboard() {
       setBulkSlotForm({
         startDate: '',
         endDate: '',
-        maxBookings: 4,
+        maxBookings: 2,
         excludeWeekends: true,
       });
       setShowAddSlots(false);
@@ -75,15 +71,6 @@ export default function AdminDashboard() {
       alert('Slots created successfully');
     } catch (error) {
       alert('Failed to create slots');
-    }
-  };
-
-  const handleToggleSlotAvailability = async (slotId: string, isAvailable: boolean) => {
-    try {
-      await adminAPI.updateSlot(slotId, { isAvailable: !isAvailable });
-      loadData();
-    } catch (error) {
-      alert('Failed to update slot');
     }
   };
 

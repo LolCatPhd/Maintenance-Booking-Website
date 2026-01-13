@@ -103,24 +103,8 @@ function toRad(degrees: number): number {
  * @returns Total price including distance charge
  */
 export function calculatePriceWithDistance(basePrice: number, distanceKm: number): number {
-  // Pricing structure:
-  // - First 10km: included in base price
-  // - 10-30km: R15 per km
-  // - 30-50km: R20 per km
-  // - 50km+: R25 per km
-
-  let distanceCharge = 0;
-
-  if (distanceKm <= 10) {
-    distanceCharge = 0;
-  } else if (distanceKm <= 30) {
-    distanceCharge = (distanceKm - 10) * 15;
-  } else if (distanceKm <= 50) {
-    distanceCharge = 20 * 15 + (distanceKm - 30) * 20; // First 20km at R15, rest at R20
-  } else {
-    distanceCharge = 20 * 15 + 20 * 20 + (distanceKm - 50) * 25; // Tiered pricing
-  }
-
+  // Fixed rate: R4.7 per km
+  const distanceCharge = distanceKm * 4.7;
   return Math.round((basePrice + distanceCharge) * 100) / 100;
 }
 

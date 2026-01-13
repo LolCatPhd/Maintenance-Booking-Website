@@ -18,20 +18,9 @@ const serviceTypes = [
   { value: 'EMERGENCY_REPAIR', label: 'Emergency Repair', price: 350 },
 ];
 
-// Distance-based pricing calculation (matching backend logic)
+// Distance-based pricing calculation: R4.7 per km (matching backend logic)
 const calculatePriceWithDistance = (basePrice: number, distanceKm: number): number => {
-  let distanceCharge = 0;
-
-  if (distanceKm <= 10) {
-    distanceCharge = 0;
-  } else if (distanceKm <= 30) {
-    distanceCharge = (distanceKm - 10) * 15;
-  } else if (distanceKm <= 50) {
-    distanceCharge = 20 * 15 + (distanceKm - 30) * 20;
-  } else {
-    distanceCharge = 20 * 15 + 20 * 20 + (distanceKm - 50) * 25;
-  }
-
+  const distanceCharge = distanceKm * 4.7;
   return Math.round((basePrice + distanceCharge) * 100) / 100;
 };
 
@@ -294,7 +283,7 @@ export default function BookingForm() {
                 </label>
                 <AddressSearchMap
                   onLocationSelect={handleLocationSelect}
-                  initialLocation={null}
+                  initialLocation={undefined}
                 />
                 {calculatingDistance && (
                   <p className="mt-2 text-sm text-blue-600">
@@ -309,11 +298,9 @@ export default function BookingForm() {
                     <p className="text-sm mt-1">
                       <strong>Distance from base:</strong> {distance.toFixed(2)} km
                     </p>
-                    {distance > 10 && (
+                    {distance > 0 && (
                       <p className="text-xs text-blue-600 mt-1">
-                        Distance charge applies: R{Math.round(
-                          totalPrice - (selectedService?.price || 0)
-                        ).toFixed(2)}
+                        Distance charge: R{(distance * 4.7).toFixed(2)}
                       </p>
                     )}
                   </div>
@@ -345,10 +332,10 @@ export default function BookingForm() {
                 <span>Base Service Fee:</span>
                 <span>R{selectedService?.price}</span>
               </div>
-              {distance !== null && distance > 10 && (
+              {distance !== null && distance > 0 && (
                 <div className="flex justify-between items-center text-sm text-blue-600">
-                  <span>Distance Charge ({distance.toFixed(2)} km):</span>
-                  <span>R{Math.round((totalPrice - (selectedService?.price || 0)) * 100) / 100}</span>
+                  <span>Distance Charge ({distance.toFixed(2)} km × R4.7):</span>
+                  <span>R{(distance * 4.7).toFixed(2)}</span>
                 </div>
               )}
               <hr />
@@ -360,8 +347,7 @@ export default function BookingForm() {
               </div>
             </div>
             <div className="text-xs text-gray-600 mb-4">
-              <p>Pricing: First 10km included</p>
-              <p>10-30km: R15/km • 30-50km: R20/km • 50km+: R25/km</p>
+              <p>Distance-based pricing: R4.7 per kilometer</p>
             </div>
             <button
               type="submit"
