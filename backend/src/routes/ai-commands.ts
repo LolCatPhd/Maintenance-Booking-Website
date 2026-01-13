@@ -1,13 +1,9 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 const prisma = new PrismaClient();
-
-// Initialize Gemini - using free tier
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 interface ParsedCommand {
   action: string;
@@ -43,55 +39,59 @@ router.post('/execute', authenticateToken, requireAdmin, async (req: AuthRequest
 });
 
 async function parseCommand(command: string): Promise<ParsedCommand> {
-  // Use gemini-1.5-pro which is the current stable model
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-pro',
-    generationConfig: {
-      temperature: 0.1, // More deterministic for command parsing
-    }
-  });
+  // Use pattern matching as fallback (more reliable than external API)
+  const cmd = command.toLowerCase().trim();
 
-  const prompt = `You are a command parser for an admin booking system. Parse the following natural language command into a structured JSON format.
+  // Pattern: "add/create slots on [day] for [number] weeks"
+  const dayWeekPattern = /(add|create).*slots?.*(on|every)\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday).*(?:for|next)\s+(\d+)\s+weeks?/i;
+  const dayWeekMatch = cmd.match(dayWeekPattern);
 
-Available actions:
-- "create_slots": Create availability slots with parameters: { dayOfWeek, startDate, endDate, weeksCount, maxBookings }
-- "delete_slots": Delete slots with parameters: { startDate, endDate }
-- "update_slot_status": Update slot availability with parameters: { slotId, isAvailable }
+  if (dayWeekMatch) {
+    const dayName = dayWeekMatch[3].toLowerCase();
+    const weeksCount = parseInt(dayWeekMatch[4]);
 
-Command: "${command}"
+    // Check for max bookings
+    const maxBookingsPattern = /(?:max|maximum)\s+(\d+)\s+bookings?/i;
+    const maxBookingsMatch = cmd.match(maxBookingsPattern);
+    const maxBookings = maxBookingsMatch ? parseInt(maxBookingsMatch[1]) : 4;
 
-Respond ONLY with valid JSON in this exact format (no markdown, no explanation):
-{
-  "action": "action_name",
-  "parameters": { /* relevant parameters */ }
-}
+    const dayMap: Record<string, number> = {
+      'sunday': 0,
+      'monday': 1,
+      'tuesday': 2,
+      'wednesday': 3,
+      'thursday': 4,
+      'friday': 5,
+      'saturday': 6
+    };
 
-For date calculations:
-- "next 5 weeks" means starting from today
-- "wednesday" or day names should be in dayOfWeek parameter (0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, etc.)
-- maxBookings defaults to 4 if not specified
-- Always use YYYY-MM-DD format for dates
-
-Examples:
-"add availability slots on wednesday for the next 5 weeks"
-{"action":"create_slots","parameters":{"dayOfWeek":3,"weeksCount":5,"maxBookings":4}}
-
-"create slots every friday for 3 weeks with max 6 bookings"
-{"action":"create_slots","parameters":{"dayOfWeek":5,"weeksCount":3,"maxBookings":6}}`;
-
-  const result = await model.generateContent(prompt);
-  const response = result.response.text();
-
-  // Clean up the response to extract JSON
-  let jsonStr = response.trim();
-  // Remove markdown code blocks if present
-  jsonStr = jsonStr.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-
-  try {
-    return JSON.parse(jsonStr);
-  } catch (e) {
-    throw new Error(`Failed to parse AI response: ${response}`);
+    return {
+      action: 'create_slots',
+      parameters: {
+        dayOfWeek: dayMap[dayName],
+        weeksCount,
+        maxBookings
+      }
+    };
   }
+
+  // Pattern: "delete slots from [date] to [date]"
+  const deletePattern = /delete.*slots?.*(from|between)\s+(\S+)\s+(?:to|and)\s+(\S+)/i;
+  const deleteMatch = cmd.match(deletePattern);
+
+  if (deleteMatch) {
+    return {
+      action: 'delete_slots',
+      parameters: {
+        startDate: deleteMatch[2],
+        endDate: deleteMatch[3]
+      }
+    };
+  }
+
+  throw new Error(
+    'Could not parse command. Try: "add availability slots on wednesday for the next 5 weeks" or "create slots every friday for 3 weeks with max 6 bookings"'
+  );
 }
 
 async function executeCommand(parsedCommand: ParsedCommand): Promise<any> {
