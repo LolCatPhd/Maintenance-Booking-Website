@@ -257,7 +257,7 @@ export default function AdminMap() {
                 Province
               </label>
               <select
-                value={selectedProvince}
+                value={selectedProvince || 'all'}
                 onChange={(e) => {
                   setSelectedProvince(e.target.value);
                   setSelectedCity('all'); // Reset city when province changes
@@ -266,7 +266,7 @@ export default function AdminMap() {
               >
                 <option value="all">All Provinces</option>
                 {provinces.map((province) => (
-                  <option key={province} value={province}>
+                  <option key={province} value={province || ''}>
                     {province}
                   </option>
                 ))}
@@ -279,14 +279,14 @@ export default function AdminMap() {
                 City
               </label>
               <select
-                value={selectedCity}
+                value={selectedCity || 'all'}
                 onChange={(e) => setSelectedCity(e.target.value)}
                 className="input-field"
                 disabled={selectedProvince !== 'all' && cities.length === 0}
               >
                 <option value="all">All Cities</option>
                 {cities.map((city) => (
-                  <option key={city} value={city}>
+                  <option key={city} value={city || ''}>
                     {city}
                   </option>
                 ))}

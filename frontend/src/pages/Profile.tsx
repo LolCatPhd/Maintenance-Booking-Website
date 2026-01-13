@@ -28,7 +28,7 @@ interface ProfileData {
 }
 
 export default function Profile() {
-  const { user, setUser } = useAuthStore();
+  const { user, token, setAuth } = useAuthStore();
   const [profileData, setProfileData] = useState<ProfileData>({
     firstName: '',
     lastName: '',
@@ -108,11 +108,16 @@ export default function Profile() {
       const response = await userAPI.updateProfile(updateData);
 
       // Update auth store with new user data
-      setUser({
-        ...user!,
-        firstName: response.data.firstName,
-        lastName: response.data.lastName,
-      });
+      if (user && token) {
+        setAuth(
+          {
+            ...user,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+          },
+          token
+        );
+      }
 
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       setShowLocationEdit(false);
