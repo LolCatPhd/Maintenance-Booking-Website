@@ -1,0 +1,241 @@
+import express from 'express';
+import { PrismaClient } from '@prisma/client';
+import { authenticateToken, AuthRequest } from '../middleware/auth';
+
+const router = express.Router();
+const prisma = new PrismaClient();
+
+// Middleware to check if user is admin
+const requireAdmin = (req: AuthRequest, res: express.Response, next: express.NextFunction) => {
+  if (req.userRole !== 'ADMIN') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  next();
+};
+
+// GET /api/bulk-systems - Get all users with their solar systems
+router.get('/', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const {
+      search,
+      province,
+      city,
+      hasSystem,
+      page = '1',
+      limit = '50'
+    } = req.query;
+
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Build where clause
+    const where: any = {
+      role: 'CLIENT',
+    };
+
+    if (search) {
+      const searchStr = search as string;
+      where.OR = [
+        { firstName: { contains: searchStr, mode: 'insensitive' } },
+        { lastName: { contains: searchStr, mode: 'insensitive' } },
+        { email: { contains: searchStr, mode: 'insensitive' } },
+        { phone: { contains: searchStr } },
+      ];
+    }
+
+    if (province && province !== 'all') {
+      where.province = province;
+    }
+
+    if (city && city !== 'all') {
+      where.city = city;
+    }
+
+    // Get total count
+    const totalUsers = await prisma.user.count({ where });
+
+    // Get users with their systems
+    const users = await prisma.user.findMany({
+      where,
+      include: {
+        solarSystems: {
+          orderBy: { createdAt: 'desc' },
+        },
+        _count: {
+          select: {
+            bookings: true,
+          },
+        },
+      },
+      orderBy: [
+        { lastName: 'asc' },
+        { firstName: 'asc' },
+      ],
+      skip,
+      take: limitNum,
+    });
+
+    // Filter by hasSystem if specified
+    let filteredUsers = users;
+    if (hasSystem === 'true') {
+      filteredUsers = users.filter(u => u.solarSystems.length > 0);
+    } else if (hasSystem === 'false') {
+      filteredUsers = users.filter(u => u.solarSystems.length === 0);
+    }
+
+    res.json({
+      users: filteredUsers,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total: totalUsers,
+        pages: Math.ceil(totalUsers / limitNum),
+      },
+    });
+  } catch (error: any) {
+    console.error('Error fetching bulk systems:', error);
+    res.status(500).json({ error: 'Failed to fetch systems' });
+  }
+});
+
+// POST /api/bulk-systems/system - Create a new solar system for a user
+router.post('/system', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const {
+      userId,
+      systemName,
+      installationDate,
+      address,
+      inverterModel,
+      batteryModel,
+      batteryQuantity,
+      solarPanelWattage,
+      solarPanelQuantity,
+      monitoringPlatformUrl,
+    } = req.body;
+
+    if (!userId || !systemName) {
+      return res.status(400).json({ error: 'userId and systemName are required' });
+    }
+
+    const system = await prisma.solarSystem.create({
+      data: {
+        userId,
+        systemName,
+        installationDate: installationDate ? new Date(installationDate) : new Date(),
+        address: address || '',
+        inverterModel: inverterModel || null,
+        batteryModel: batteryModel || null,
+        batteryQuantity: batteryQuantity ? parseInt(batteryQuantity) : null,
+        solarPanelWattage: solarPanelWattage || null,
+        solarPanelQuantity: solarPanelQuantity ? parseInt(solarPanelQuantity) : null,
+        monitoringPlatformUrl: monitoringPlatformUrl || null,
+      },
+    });
+
+    res.status(201).json(system);
+  } catch (error: any) {
+    console.error('Error creating system:', error);
+    res.status(500).json({ error: 'Failed to create system' });
+  }
+});
+
+// PUT /api/bulk-systems/system/:id - Update a solar system
+router.put('/system/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      systemName,
+      installationDate,
+      address,
+      inverterModel,
+      batteryModel,
+      batteryQuantity,
+      solarPanelWattage,
+      solarPanelQuantity,
+      monitoringPlatformUrl,
+    } = req.body;
+
+    const updateData: any = {};
+
+    if (systemName !== undefined) updateData.systemName = systemName;
+    if (installationDate !== undefined) updateData.installationDate = new Date(installationDate);
+    if (address !== undefined) updateData.address = address;
+    if (inverterModel !== undefined) updateData.inverterModel = inverterModel || null;
+    if (batteryModel !== undefined) updateData.batteryModel = batteryModel || null;
+    if (batteryQuantity !== undefined) updateData.batteryQuantity = batteryQuantity ? parseInt(batteryQuantity) : null;
+    if (solarPanelWattage !== undefined) updateData.solarPanelWattage = solarPanelWattage || null;
+    if (solarPanelQuantity !== undefined) updateData.solarPanelQuantity = solarPanelQuantity ? parseInt(solarPanelQuantity) : null;
+    if (monitoringPlatformUrl !== undefined) updateData.monitoringPlatformUrl = monitoringPlatformUrl || null;
+
+    const system = await prisma.solarSystem.update({
+      where: { id },
+      data: updateData,
+    });
+
+    res.json(system);
+  } catch (error: any) {
+    console.error('Error updating system:', error);
+    res.status(500).json({ error: 'Failed to update system' });
+  }
+});
+
+// DELETE /api/bulk-systems/system/:id - Delete a solar system
+router.delete('/system/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.solarSystem.delete({
+      where: { id },
+    });
+
+    res.json({ message: 'System deleted successfully' });
+  } catch (error: any) {
+    console.error('Error deleting system:', error);
+    res.status(500).json({ error: 'Failed to delete system' });
+  }
+});
+
+// PUT /api/bulk-systems/user/:id - Update user details
+router.put('/user/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      streetAddress,
+      city,
+      province,
+      postalCode,
+    } = req.body;
+
+    const updateData: any = {};
+
+    if (firstName !== undefined) updateData.firstName = firstName;
+    if (lastName !== undefined) updateData.lastName = lastName;
+    if (email !== undefined) updateData.email = email;
+    if (phone !== undefined) updateData.phone = phone;
+    if (streetAddress !== undefined) updateData.streetAddress = streetAddress;
+    if (city !== undefined) updateData.city = city;
+    if (province !== undefined) updateData.province = province;
+    if (postalCode !== undefined) updateData.postalCode = postalCode;
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: updateData,
+      include: {
+        solarSystems: true,
+      },
+    });
+
+    res.json(user);
+  } catch (error: any) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+export default router;

@@ -17,6 +17,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import DesignTool from './pages/DesignTool';
 import Training from './pages/Training';
 import Profile from './pages/Profile';
+import BulkSystemEditor from './pages/BulkSystemEditor';
 
 function App() {
   const { user } = useAuthStore();
@@ -64,6 +65,10 @@ function App() {
           <Route
             path="admin"
             element={user?.role === 'ADMIN' ? <AdminDashboard /> : <Navigate to="/dashboard" />}
+          />
+          <Route
+            path="admin/bulk-systems"
+            element={user?.role === 'ADMIN' ? <BulkSystemEditor /> : <Navigate to="/dashboard" />}
           />
         </Route>
       </Routes>
