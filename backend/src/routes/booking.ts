@@ -2,6 +2,11 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
 import { z } from 'zod';
+import {
+  calculateDistanceFromBase,
+  calculateStraightLineDistance,
+  calculatePriceWithDistance,
+} from '../services/distanceService';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -17,7 +22,28 @@ const createBookingSchema = z.object({
     'EMERGENCY_REPAIR',
   ]),
   address: z.string().min(1),
+  latitude: z.number(),
+  longitude: z.number(),
+  distanceFromBase: z.number(),
   notes: z.string().optional(),
+});
+
+// Calculate distance from base to a location
+router.post('/calculate-distance', authenticateToken, async (req, res) => {
+  try {
+    const { longitude, latitude } = req.body;
+
+    if (!longitude || !latitude) {
+      return res.status(400).json({ error: 'Longitude and latitude are required' });
+    }
+
+    const distance = await calculateDistanceFromBase(longitude, latitude);
+
+    res.json({ distance });
+  } catch (error: any) {
+    console.error('Error calculating distance:', error);
+    res.status(500).json({ error: error.message || 'Failed to calculate distance' });
+  }
 });
 
 router.get('/available-slots', authenticateToken, async (req, res) => {
@@ -55,6 +81,12 @@ router.get('/available-slots', authenticateToken, async (req, res) => {
         date: slot.date,
         availableSpots: slot.maxBookings - slot.bookings.length,
         maxBookings: slot.maxBookings,
+        bookings: slot.bookings.map(b => ({
+          id: b.id,
+          latitude: b.latitude,
+          longitude: b.longitude,
+          address: b.address,
+        })),
       }));
 
     res.json(availableSlots);
@@ -108,6 +140,26 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
       return res.status(400).json({ error: 'Slot is fully booked' });
     }
 
+    // Proximity constraint: If there's already 1 booking, check if new booking is within 20km
+    if (slot.bookings.length === 1) {
+      const existingBooking = slot.bookings[0];
+
+      if (existingBooking.latitude && existingBooking.longitude) {
+        const distance = calculateStraightLineDistance(
+          existingBooking.longitude,
+          existingBooking.latitude,
+          data.longitude,
+          data.latitude
+        );
+
+        if (distance > 20) {
+          return res.status(400).json({
+            error: `Second booking must be within 20km of the first booking. Current distance: ${distance.toFixed(2)}km`,
+          });
+        }
+      }
+    }
+
     const serviceRates: Record<string, number> = {
       ROUTINE_INSPECTION: 150,
       PANEL_CLEANING: 200,
@@ -117,7 +169,10 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
       EMERGENCY_REPAIR: 350,
     };
 
-    const totalAmount = serviceRates[data.serviceType] || 200;
+    const baseAmount = serviceRates[data.serviceType] || 200;
+
+    // Calculate total amount including distance-based pricing
+    const totalAmount = calculatePriceWithDistance(baseAmount, data.distanceFromBase);
 
     const booking = await prisma.booking.create({
       data: {
@@ -125,6 +180,9 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
         slotId: data.slotId,
         serviceType: data.serviceType,
         address: data.address,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        distanceFromBase: data.distanceFromBase,
         notes: data.notes,
         totalAmount,
         status: 'PENDING',
