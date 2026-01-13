@@ -146,7 +146,9 @@ function generateUsername(name: string, contact: string): string {
 }
 
 async function importClients() {
-  const csvPath = path.join(__dirname, '../../../complete_invoice_database_FINAL.csv');
+  // In Railway: __dirname = /app/backend/src/scripts, CSV at /app/backend/complete_invoice_database_FINAL.csv
+  // In local: __dirname = /path/to/backend/src/scripts, CSV at /path/to/backend/complete_invoice_database_FINAL.csv
+  const csvPath = path.join(__dirname, '../../complete_invoice_database_FINAL.csv');
   const mapboxToken = process.env.VITE_MAPBOX_TOKEN || '';
 
   if (!mapboxToken) {
