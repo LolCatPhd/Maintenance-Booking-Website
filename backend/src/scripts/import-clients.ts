@@ -43,7 +43,7 @@ async function geocodeAddress(address: string, mapboxToken: string) {
       `limit=1`
     );
 
-    const data: MapboxResponse = await response.json();
+    const data = (await response.json()) as MapboxResponse;
 
     if (data.features && data.features.length > 0) {
       const feature = data.features[0];
