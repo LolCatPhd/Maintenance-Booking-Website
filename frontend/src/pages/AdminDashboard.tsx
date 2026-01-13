@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../services/api';
 import AdminMap from '../components/AdminMap';
+import AdminCalendar from '../components/AdminCalendar';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function AdminDashboard() {
   const [bulkSlotForm, setBulkSlotForm] = useState({
     startDate: '',
     endDate: '',
-    maxBookings: 4,
+    maxBookings: 2,
     excludeWeekends: true,
   });
   const [aiCommand, setAiCommand] = useState('');
@@ -486,39 +487,8 @@ export default function AdminDashboard() {
                   </div>
                 )}
 
-                <div className="grid md:grid-cols-3 gap-4">
-                  {slots.slice(0, 50).map((slot) => (
-                    <div
-                      key={slot.id}
-                      className={`card ${
-                        slot.isAvailable ? 'border-green-300' : 'border-red-300'
-                      } border-2`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-bold">
-                            {new Date(slot.date).toLocaleDateString()}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {slot.bookings.length} / {slot.maxBookings} booked
-                          </p>
-                        </div>
-                        <button
-                          onClick={() =>
-                            handleToggleSlotAvailability(slot.id, slot.isAvailable)
-                          }
-                          className={`text-xs px-3 py-1 rounded-full ${
-                            slot.isAvailable
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {slot.isAvailable ? 'Available' : 'Unavailable'}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {/* Calendar View */}
+                <AdminCalendar />
               </div>
             )}
 

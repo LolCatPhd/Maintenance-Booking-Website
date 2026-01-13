@@ -75,7 +75,7 @@ model AvailableSlot {
   id          String    @id @default(uuid())
   date        DateTime  @unique
   isAvailable Boolean   @default(true)
-  maxBookings Int       @default(4)
+  maxBookings Int       @default(2)
   bookings    Booking[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -90,6 +90,9 @@ model Booking {
   serviceType       ServiceType
   status            BookingStatus     @default(PENDING)
   address           String
+  latitude          Float?
+  longitude         Float?
+  distanceFromBase  Float?
   notes             String?
   totalAmount       Float
   createdAt         DateTime          @default(now())
