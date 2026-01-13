@@ -97,6 +97,7 @@ export const adminAPI = {
   updateMaintenance: (bookingId: string, data: any) =>
     api.post(`/admin/bookings/${bookingId}/maintenance`, data),
   getStats: () => api.get('/admin/stats'),
+  getUserLocations: () => api.get('/admin/users/locations'),
 };
 
 export default api;

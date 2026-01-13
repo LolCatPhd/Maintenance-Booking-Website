@@ -272,4 +272,62 @@ router.get('/stats', async (req, res) => {
   }
 });
 
+router.get('/users/locations', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        role: 'CLIENT',
+        latitude: { not: null },
+        longitude: { not: null },
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        latitude: true,
+        longitude: true,
+        formattedAddress: true,
+        city: true,
+        province: true,
+        createdAt: true,
+        _count: {
+          select: {
+            bookings: true,
+            solarSystems: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    // Group users by province for statistics
+    const byProvince: Record<string, number> = {};
+    const byCity: Record<string, number> = {};
+
+    users.forEach(user => {
+      if (user.province) {
+        byProvince[user.province] = (byProvince[user.province] || 0) + 1;
+      }
+      if (user.city) {
+        byCity[user.city] = (byCity[user.city] || 0) + 1;
+      }
+    });
+
+    res.json({
+      users,
+      statistics: {
+        total: users.length,
+        byProvince,
+        byCity,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch user locations' });
+  }
+});
+
 export default router;

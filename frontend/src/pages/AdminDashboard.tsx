@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { adminAPI } from '../services/api';
+import AdminMap from '../components/AdminMap';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'slots'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'slots' | 'locations'>('overview');
   const [stats, setStats] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [slots, setSlots] = useState<any[]>([]);
@@ -31,6 +32,10 @@ export default function AdminDashboard() {
       } else if (activeTab === 'slots') {
         const response = await adminAPI.getSlots();
         setSlots(response.data);
+      } else if (activeTab === 'locations') {
+        // AdminMap component handles its own data loading
+        setLoading(false);
+        return;
       }
     } catch (error) {
       console.error('Failed to load data', error);
@@ -110,6 +115,16 @@ export default function AdminDashboard() {
             }`}
           >
             Availability
+          </button>
+          <button
+            onClick={() => setActiveTab('locations')}
+            className={`px-6 py-3 rounded-lg font-semibold ${
+              activeTab === 'locations'
+                ? 'bg-solar-blue text-white'
+                : 'bg-white text-gray-700 border border-gray-300'
+            }`}
+          >
+            User Locations
           </button>
         </div>
 
@@ -324,6 +339,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
+
+            {activeTab === 'locations' && <AdminMap />}
           </>
         )}
       </div>
