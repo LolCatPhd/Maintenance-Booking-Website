@@ -168,25 +168,6 @@ export default function BulkSystemEditor() {
     setEditFormData({});
   };
 
-  const saveSystem = async () => {
-    if (!editingSystem) return;
-
-    try {
-      await axios.put(
-        `${API_URL}/api/bulk-systems/system/${editingSystem}`,
-        editFormData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      showMessage('success', 'System updated successfully');
-      setEditingSystem(null);
-      setEditFormData({});
-      fetchUsers();
-    } catch (error: any) {
-      showMessage('error', 'Failed to update system');
-    }
-  };
-
   const deleteSystem = async (systemId: string) => {
     if (!confirm('Are you sure you want to delete this system?')) return;
 
