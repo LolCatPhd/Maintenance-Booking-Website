@@ -11,7 +11,8 @@
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "import-clients": "ts-node src/scripts/import-clients.ts",
-    "import-equipment": "ts-node src/scripts/import-equipment.ts"
+    "import-equipment": "ts-node src/scripts/import-equipment.ts",
+    "import-updated-database": "ts-node src/scripts/import-updated-database.ts"
   },
   "keywords": [
     "solar",
@@ -29,10 +30,12 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "csv-parse": "^6.1.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "groq-sdk": "^0.37.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -40,6 +43,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
+    "@types/multer": "^2.0.0",
     "@types/node": "^20.10.6",
     "nodemon": "^3.0.2",
     "prisma": "^5.8.0",
