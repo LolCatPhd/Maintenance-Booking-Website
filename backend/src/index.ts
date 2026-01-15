@@ -9,6 +9,7 @@ import paymentRoutes from './routes/payment';
 import adminRoutes from './routes/admin';
 import aiCommandsRoutes from './routes/ai-commands';
 import bulkSystemsRoutes from './routes/bulk-systems';
+import csvImportRoutes from './routes/csv-import';
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai-commands', aiCommandsRoutes);
 app.use('/api/bulk-systems', bulkSystemsRoutes);
+app.use('/api/csv-import', csvImportRoutes);
 
 // Root endpoint for Railway health checks
 app.get('/', (req, res) => {
