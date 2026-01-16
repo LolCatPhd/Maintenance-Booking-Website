@@ -61,20 +61,17 @@ interface User {
 
 interface ComponentTableData {
   inverter: {
-    brand: string;
-    rating: string;
+    brandRating: string; // Combined "Brand Rating" string
     quantity: number;
     serialNumbers: string[];
   };
   batteries: {
-    brand: string;
-    rating: string;
+    brandRating: string; // Combined "Brand Rating" string
     quantity: number;
     serialNumbers: string[];
   };
   solarPanels: {
-    brand: string;
-    rating: string;
+    brandRating: string; // Combined "Brand Rating" string
     quantity: number;
   };
 }
@@ -102,10 +99,11 @@ export default function BulkSystemEditor() {
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
   const [editingSystem, setEditingSystem] = useState<string | null>(null);
   const [componentTableData, setComponentTableData] = useState<ComponentTableData>({
-    inverter: { brand: '', rating: '', quantity: 0, serialNumbers: [] },
-    batteries: { brand: '', rating: '', quantity: 0, serialNumbers: [] },
-    solarPanels: { brand: '', rating: '', quantity: 0 },
+    inverter: { brandRating: '', quantity: 0, serialNumbers: [] },
+    batteries: { brandRating: '', quantity: 0, serialNumbers: [] },
+    solarPanels: { brandRating: '', quantity: 0 },
   });
+  const [editingSystemName, setEditingSystemName] = useState('');
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editUserData, setEditUserData] = useState<Partial<User>>({});
   const [userLocationData, setUserLocationData] = useState<LocationData | null>(null);
@@ -217,25 +215,23 @@ export default function BulkSystemEditor() {
 
     setComponentTableData({
       inverter: {
-        brand: inverter?.manufacturer || '',
-        rating: inverter?.model || '',
+        brandRating: inverter ? `${inverter.manufacturer} ${inverter.model}`.trim() : '',
         quantity: inverter ? 1 : 0,
         serialNumbers: inverter?.serialNumber ? [inverter.serialNumber] : [''],
       },
       batteries: {
-        brand: batteries[0]?.manufacturer || '',
-        rating: batteries[0]?.model || '',
+        brandRating: batteries[0] ? `${batteries[0].manufacturer} ${batteries[0].model}`.trim() : '',
         quantity: batteries.length,
         serialNumbers: batteries.length > 0
           ? batteries.map(b => b.serialNumber || '')
           : [''],
       },
       solarPanels: {
-        brand: solarPanels[0]?.manufacturer || '',
-        rating: solarPanels[0]?.model || '',
+        brandRating: solarPanels[0] ? `${solarPanels[0].manufacturer} ${solarPanels[0].model}`.trim() : '',
         quantity: solarPanels.length,
       },
     });
+    setEditingSystemName(system.systemName);
   };
 
   // Update serial number array when quantity changes
@@ -256,42 +252,66 @@ export default function BulkSystemEditor() {
     });
   };
 
+  // Parse brandRating string into manufacturer and model
+  const parseBrandRating = (brandRating: string): { manufacturer: string; model: string } => {
+    const trimmed = brandRating.trim();
+    if (!trimmed) return { manufacturer: '', model: '' };
+
+    const parts = trimmed.split(' ');
+    return {
+      manufacturer: parts[0] || '',
+      model: parts.slice(1).join(' ') || '',
+    };
+  };
+
   // Save component table to system
   const saveComponentTable = async () => {
     if (!editingSystem) return;
 
     try {
+      // Update system name first
+      if (editingSystemName) {
+        await axios.put(
+          `${API_URL}/api/bulk-systems/system/${editingSystem}`,
+          { systemName: editingSystemName },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+
       // Build components array from table data
       const components: SystemComponent[] = [];
 
       // Add inverter if quantity > 0
       if (componentTableData.inverter.quantity > 0) {
+        const { manufacturer, model } = parseBrandRating(componentTableData.inverter.brandRating);
         components.push({
           componentType: 'INVERTER',
-          manufacturer: componentTableData.inverter.brand,
-          model: componentTableData.inverter.rating,
+          manufacturer,
+          model,
           serialNumber: componentTableData.inverter.serialNumbers[0] || null,
           installDate: new Date().toISOString(),
         });
       }
 
       // Add batteries based on quantity
+      const batteryParsed = parseBrandRating(componentTableData.batteries.brandRating);
       for (let i = 0; i < componentTableData.batteries.quantity; i++) {
         components.push({
           componentType: 'BATTERY',
-          manufacturer: componentTableData.batteries.brand,
-          model: componentTableData.batteries.rating,
+          manufacturer: batteryParsed.manufacturer,
+          model: batteryParsed.model,
           serialNumber: componentTableData.batteries.serialNumbers[i] || null,
           installDate: new Date().toISOString(),
         });
       }
 
       // Add solar panels based on quantity (no serial numbers)
+      const panelParsed = parseBrandRating(componentTableData.solarPanels.brandRating);
       for (let i = 0; i < componentTableData.solarPanels.quantity; i++) {
         components.push({
           componentType: 'SOLAR_PANEL',
-          manufacturer: componentTableData.solarPanels.brand,
-          model: componentTableData.solarPanels.rating,
+          manufacturer: panelParsed.manufacturer,
+          model: panelParsed.model,
           installDate: new Date().toISOString(),
         });
       }
@@ -303,11 +323,11 @@ export default function BulkSystemEditor() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      showMessage('success', 'System components updated successfully');
+      showMessage('success', 'System updated successfully');
       setEditingSystem(null);
       fetchUsers();
     } catch (error: any) {
-      showMessage('error', 'Failed to update system components');
+      showMessage('error', 'Failed to update system');
     }
   };
 
@@ -785,7 +805,19 @@ export default function BulkSystemEditor() {
                                   <div key={system.id} className="bg-white p-4 rounded border">
                                     {editingSystem === system.id ? (
                                       <div className="space-y-4">
-                                        <h3 className="text-lg font-semibold text-blue-900 mb-4">Edit System: {system.systemName}</h3>
+                                        <h3 className="text-lg font-semibold text-blue-900 mb-4">Edit System</h3>
+
+                                        {/* System Name Input */}
+                                        <div>
+                                          <label className="block text-sm font-medium mb-1">System Name</label>
+                                          <input
+                                            type="text"
+                                            value={editingSystemName}
+                                            onChange={(e) => setEditingSystemName(e.target.value)}
+                                            className="border rounded px-3 py-2 w-full"
+                                            placeholder="e.g. System 1 (SPD-INV083)"
+                                          />
+                                        </div>
 
                                         {/* Component Table */}
                                         <div className="overflow-x-auto">
@@ -806,15 +838,13 @@ export default function BulkSystemEditor() {
                                                   <input
                                                     type="text"
                                                     placeholder="e.g. Deye 8kW"
-                                                    value={componentTableData.inverter.brand + (componentTableData.inverter.rating ? ' ' + componentTableData.inverter.rating : '')}
+                                                    value={componentTableData.inverter.brandRating}
                                                     onChange={(e) => {
-                                                      const parts = e.target.value.split(' ');
                                                       setComponentTableData({
                                                         ...componentTableData,
                                                         inverter: {
                                                           ...componentTableData.inverter,
-                                                          brand: parts[0] || '',
-                                                          rating: parts.slice(1).join(' ') || '',
+                                                          brandRating: e.target.value,
                                                         },
                                                       });
                                                     }}
@@ -825,15 +855,13 @@ export default function BulkSystemEditor() {
                                                   <input
                                                     type="text"
                                                     placeholder="e.g. Hubble 5.5kWh"
-                                                    value={componentTableData.batteries.brand + (componentTableData.batteries.rating ? ' ' + componentTableData.batteries.rating : '')}
+                                                    value={componentTableData.batteries.brandRating}
                                                     onChange={(e) => {
-                                                      const parts = e.target.value.split(' ');
                                                       setComponentTableData({
                                                         ...componentTableData,
                                                         batteries: {
                                                           ...componentTableData.batteries,
-                                                          brand: parts[0] || '',
-                                                          rating: parts.slice(1).join(' ') || '',
+                                                          brandRating: e.target.value,
                                                         },
                                                       });
                                                     }}
@@ -844,15 +872,13 @@ export default function BulkSystemEditor() {
                                                   <input
                                                     type="text"
                                                     placeholder="e.g. JA Solar 450W"
-                                                    value={componentTableData.solarPanels.brand + (componentTableData.solarPanels.rating ? ' ' + componentTableData.solarPanels.rating : '')}
+                                                    value={componentTableData.solarPanels.brandRating}
                                                     onChange={(e) => {
-                                                      const parts = e.target.value.split(' ');
                                                       setComponentTableData({
                                                         ...componentTableData,
                                                         solarPanels: {
                                                           ...componentTableData.solarPanels,
-                                                          brand: parts[0] || '',
-                                                          rating: parts.slice(1).join(' ') || '',
+                                                          brandRating: e.target.value,
                                                         },
                                                       });
                                                     }}
