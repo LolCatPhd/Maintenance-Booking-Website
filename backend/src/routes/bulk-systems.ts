@@ -202,6 +202,73 @@ router.delete('/system/:id', authenticateToken, requireAdmin, async (req: AuthRe
   }
 });
 
+// POST /api/bulk-systems/user - Create a new user
+router.post('/user', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      streetAddress,
+      city,
+      province,
+      postalCode,
+      latitude,
+      longitude,
+      formattedAddress,
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !phone) {
+      return res.status(400).json({ error: 'firstName, lastName, email, and phone are required' });
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email },
+          { phone },
+        ],
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email or phone already exists' });
+    }
+
+    // Create user with default password
+    const bcrypt = require('bcryptjs');
+    const defaultPassword = await bcrypt.hash('Welcome123!', 10);
+
+    const user = await prisma.user.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        phone,
+        password: defaultPassword,
+        role: 'CLIENT',
+        streetAddress: streetAddress || null,
+        city: city || null,
+        province: province || null,
+        postalCode: postalCode || null,
+        latitude: latitude || null,
+        longitude: longitude || null,
+        formattedAddress: formattedAddress || null,
+      },
+      include: {
+        solarSystems: true,
+      },
+    });
+
+    res.status(201).json(user);
+  } catch (error: any) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+
 // PUT /api/bulk-systems/user/:id - Update user details
 router.put('/user/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
   try {
@@ -246,6 +313,43 @@ router.put('/user/:id', authenticateToken, requireAdmin, async (req: AuthRequest
   } catch (error: any) {
     console.error('Error updating user:', error);
     res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+// DELETE /api/bulk-systems/user/:id - Delete a user and all their data
+router.delete('/user/:id', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+
+    // Prisma cascade delete will handle related records (solarSystems, bookings, payments)
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (error: any) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
+});
+
+// POST /api/bulk-systems/user/:id/reset-password - Reset user password to default
+router.post('/user/:id/reset-password', authenticateToken, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+
+    const bcrypt = require('bcryptjs');
+    const defaultPassword = await bcrypt.hash('Welcome123!', 10);
+
+    await prisma.user.update({
+      where: { id },
+      data: { password: defaultPassword },
+    });
+
+    res.json({ message: 'Password reset to default (Welcome123!)' });
+  } catch (error: any) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ error: 'Failed to reset password' });
   }
 });
 

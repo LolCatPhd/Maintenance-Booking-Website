@@ -109,6 +109,9 @@ export default function BulkSystemEditor() {
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editUserData, setEditUserData] = useState<Partial<User>>({});
   const [userLocationData, setUserLocationData] = useState<LocationData | null>(null);
+  const [creatingNewUser, setCreatingNewUser] = useState(false);
+  const [newUserData, setNewUserData] = useState<Partial<User>>({});
+  const [newUserLocationData, setNewUserLocationData] = useState<LocationData | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const fetchUsers = async () => {
@@ -379,6 +382,105 @@ export default function BulkSystemEditor() {
     }
   };
 
+  // Delete user
+  const deleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`Are you sure you want to delete ${userName}? This will delete all their systems, bookings, and payments.`)) {
+      return;
+    }
+
+    try {
+      await axios.delete(
+        `${API_URL}/api/bulk-systems/user/${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      showMessage('success', 'User deleted successfully');
+      fetchUsers();
+    } catch (error: any) {
+      showMessage('error', 'Failed to delete user');
+    }
+  };
+
+  // Reset user password
+  const resetUserPassword = async (userId: string, userName: string) => {
+    if (!confirm(`Reset password for ${userName} to default (Welcome123!)?`)) {
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${API_URL}/api/bulk-systems/user/${userId}/reset-password`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      showMessage('success', 'Password reset to Welcome123!');
+    } catch (error: any) {
+      showMessage('error', 'Failed to reset password');
+    }
+  };
+
+  // Start creating new user
+  const startCreatingUser = () => {
+    setCreatingNewUser(true);
+    setNewUserData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      streetAddress: '',
+      city: '',
+      province: '',
+      postalCode: '',
+    });
+    setNewUserLocationData(null);
+  };
+
+  // Cancel creating new user
+  const cancelCreatingUser = () => {
+    setCreatingNewUser(false);
+    setNewUserData({});
+    setNewUserLocationData(null);
+  };
+
+  // Create new user
+  const createUser = async () => {
+    try {
+      // Validate required fields
+      if (!newUserData.firstName || !newUserData.lastName || !newUserData.email || !newUserData.phone) {
+        showMessage('error', 'First name, last name, email, and phone are required');
+        return;
+      }
+
+      const createData = {
+        ...newUserData,
+        ...(newUserLocationData && {
+          latitude: newUserLocationData.latitude,
+          longitude: newUserLocationData.longitude,
+          formattedAddress: newUserLocationData.formattedAddress,
+          streetAddress: newUserLocationData.streetAddress,
+          city: newUserLocationData.city,
+          province: newUserLocationData.province,
+          postalCode: newUserLocationData.postalCode,
+        }),
+      };
+
+      await axios.post(
+        `${API_URL}/api/bulk-systems/user`,
+        createData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      showMessage('success', 'User created successfully with password: Welcome123!');
+      setCreatingNewUser(false);
+      setNewUserData({});
+      setNewUserLocationData(null);
+      fetchUsers();
+    } catch (error: any) {
+      showMessage('error', error.response?.data?.error || 'Failed to create user');
+    }
+  };
+
   const uniqueProvinces = Array.from(new Set(users.map(u => u.province).filter((p): p is string => Boolean(p)))).sort();
   const uniqueCities = Array.from(new Set(users.map(u => u.city).filter((c): c is string => Boolean(c)))).sort();
 
@@ -390,6 +492,94 @@ export default function BulkSystemEditor() {
         {message && (
           <div className={`mb-4 p-4 rounded ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
             {message.text}
+          </div>
+        )}
+
+        {/* Add New User Button */}
+        <div className="mb-4">
+          <button
+            onClick={startCreatingUser}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 font-medium"
+          >
+            + Add New User
+          </button>
+        </div>
+
+        {/* New User Form */}
+        {creatingNewUser && (
+          <div className="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 className="text-xl font-bold mb-4">Create New User</h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">First Name *</label>
+                  <input
+                    type="text"
+                    value={newUserData.firstName || ''}
+                    onChange={(e) => setNewUserData({ ...newUserData, firstName: e.target.value })}
+                    className="border rounded px-3 py-2 w-full"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Last Name *</label>
+                  <input
+                    type="text"
+                    value={newUserData.lastName || ''}
+                    onChange={(e) => setNewUserData({ ...newUserData, lastName: e.target.value })}
+                    className="border rounded px-3 py-2 w-full"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Email *</label>
+                  <input
+                    type="email"
+                    value={newUserData.email || ''}
+                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                    className="border rounded px-3 py-2 w-full"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Phone *</label>
+                  <input
+                    type="tel"
+                    value={newUserData.phone || ''}
+                    onChange={(e) => setNewUserData({ ...newUserData, phone: e.target.value })}
+                    className="border rounded px-3 py-2 w-full"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h4 className="text-md font-medium mb-2">Address (Optional)</h4>
+                <AddressSearchMap
+                  onLocationSelect={setNewUserLocationData}
+                  initialLocation={newUserLocationData || undefined}
+                />
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded p-3 text-sm text-blue-800">
+                Default password will be: <strong>Welcome123!</strong>
+              </div>
+
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={createUser}
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                >
+                  Create User
+                </button>
+                <button
+                  onClick={cancelCreatingUser}
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -482,18 +672,24 @@ export default function BulkSystemEditor() {
                         </td>
                         <td className="px-4 py-3 text-center text-sm">{user._count.bookings}</td>
                         <td className="px-4 py-3">
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 flex-wrap">
                             <button
                               onClick={() => startEditingUser(user)}
                               className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600"
                             >
-                              Edit User
+                              Edit
                             </button>
                             <button
                               onClick={() => addSystem(user.id)}
                               className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
                             >
-                              + Add System
+                              + System
+                            </button>
+                            <button
+                              onClick={() => deleteUser(user.id, `${user.firstName} ${user.lastName}`)}
+                              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                            >
+                              Delete
                             </button>
                           </div>
                         </td>
@@ -553,12 +749,18 @@ export default function BulkSystemEditor() {
                                 />
                               </div>
 
-                              <div className="flex gap-2 mt-4">
+                              <div className="flex gap-2 mt-4 flex-wrap">
                                 <button
                                   onClick={saveUser}
                                   className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                                 >
                                   Save User
+                                </button>
+                                <button
+                                  onClick={() => resetUserPassword(editingUser!, `${editUserData.firstName} ${editUserData.lastName}`)}
+                                  className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
+                                >
+                                  Reset Password
                                 </button>
                                 <button
                                   onClick={cancelUserEditing}
